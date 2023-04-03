@@ -84,7 +84,7 @@ public class KickMenu extends GUIBuilder {
             update();
             MessageUtil.actionbar(getPlayer(), "&a正在尝试重新连接 请稍后..");
         } else if (e.slot() == 15 && e.clickedItem().itemType() == ItemType.BEACON) {
-            getPlayer().connect(limboserver);
+            getPlayer().connect(lobbyserver);
             update();
             MessageUtil.actionbar(getPlayer(), "&a正在将您传送到大厅..");
         } else {

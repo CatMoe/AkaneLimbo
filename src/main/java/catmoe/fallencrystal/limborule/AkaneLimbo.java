@@ -5,8 +5,8 @@ import catmoe.fallencrystal.limborule.util.MessageUtil;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.plugin.Plugin;
 
-public class LimboRule extends Plugin {
-    private static LimboRule instance;
+public class AkaneLimbo extends Plugin {
+    private static AkaneLimbo instance;
 
     public void onEnable() {
         instance = this;
@@ -16,7 +16,7 @@ public class LimboRule extends Plugin {
         MessageUtil.loginfo("&bLimbo&dRule &7> &b偷偷摸摸载入 应该没人会发现的叭..");
     }
 
-    public static LimboRule getInstance() {
+    public static AkaneLimbo getInstance() {
         return instance;
     }
 

@@ -6,14 +6,14 @@
 
     <description>SakuraStarOcean Server Plugin</description>
     <groupId>catmoe.fallencrystal.limborule</groupId>
-    <artifactId>LimboRule</artifactId>
+    <artifactId>AkaneLimbo</artifactId>
     <version>0.0.1</version>
     <properties>
         <java.version>1.8</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
     <packaging>jar</packaging>
-    <name>LimboRule</name>
+    <name>AkaneLimbo</name>
 
     <repositories>
         <repository>
@@ -134,6 +134,13 @@
             <artifactId>bungeecord-protocol</artifactId>
             <version>1.19-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.md-5</groupId>
+            <artifactId>bungeecord</artifactId>
+            <version>1.19-R0.1-SNAPSHOT</version>
+            <scope>system</scope>
+            <systemPath>${basedir}/lib/BungeeCord.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>dev.simplix</groupId>
