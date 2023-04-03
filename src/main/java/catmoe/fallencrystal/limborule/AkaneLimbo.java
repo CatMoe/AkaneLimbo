@@ -1,7 +1,10 @@
 package catmoe.fallencrystal.limborule;
 
+import catmoe.fallencrystal.limborule.command.CommandManager;
+import catmoe.fallencrystal.limborule.command.commands.SendLimbo;
 import catmoe.fallencrystal.limborule.kick.KickRedirect;
 import catmoe.fallencrystal.limborule.util.MessageUtil;
+
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.plugin.Plugin;
 
@@ -22,5 +25,10 @@ public class AkaneLimbo extends Plugin {
 
     public void onDisable() {
         MessageUtil.loginfo("&bLimbo&dRule &7> &b其实吧 这个插件轻到连卸载都不需要 w=");
+    }
+
+    public void LoadCommand() {
+        CommandManager commandManager = new CommandManager(instance, "akanelimbo", "", "akanelimbo", "limbo");
+        commandManager.register(new SendLimbo());
     }
 }
