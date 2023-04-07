@@ -1,13 +1,13 @@
-package catmoe.fallencrystal.limborule.command.commands;
+package catmoe.fallencrystal.akanelimbo.command.commands;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import catmoe.fallencrystal.limborule.command.SubCommand;
-import catmoe.fallencrystal.limborule.util.LimboCreater;
-import catmoe.fallencrystal.limborule.util.MessageUtil;
+import catmoe.fallencrystal.akanelimbo.command.SubCommand;
+import catmoe.fallencrystal.akanelimbo.util.LimboCreater;
+import catmoe.fallencrystal.akanelimbo.util.MessageUtil;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -24,24 +24,24 @@ public class SendLimbo implements SubCommand {
                 MessageUtil.prefixsender(sender, "&cConsole is a invalid target.");
                 return;
             }
-            limbo.CreateServer((ProxiedPlayer) sender);
+            limbo.CreateServer((ProxiedPlayer) sender, "CmdCreate");
             limbo.Connect((ProxiedPlayer) sender);
         }
         if (args[1].equalsIgnoreCase("all")) {
             for (ProxiedPlayer p : ProxyServer.getInstance().getPlayers()) {
-                limbo.CreateServer(p);
+                limbo.CreateServer(p, "CmdCreate");
                 limbo.Connect(p);
             }
         } else {
-            ProxiedPlayer p = null;
-            // 判定是否有这个玩家 如果非玩家通常会抛出错误
             try {
-                p = ProxyServer.getInstance().getPlayer(args[1]);
+                ProxiedPlayer p = ProxyServer.getInstance().getPlayer(args[1]);
+                if (p != null) {
+                    limbo.CreateServer(p, "CmdCreate");
+                    limbo.Connect(p);
+                }
             } catch (Exception e) {
-                return; // 非玩家
+                return;
             }
-            limbo.CreateServer(p);
-            limbo.Connect(p);
         }
     }
 
@@ -80,7 +80,7 @@ public class SendLimbo implements SubCommand {
 
     @Override
     public int StrictSize() {
-        return 3;
+        return 2;
     }
 
 }

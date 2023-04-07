@@ -1,4 +1,4 @@
-package catmoe.fallencrystal.limborule.command;
+package catmoe.fallencrystal.akanelimbo.command;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import catmoe.fallencrystal.limborule.util.MessageUtil;
+import catmoe.fallencrystal.akanelimbo.util.MessageUtil;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Command;

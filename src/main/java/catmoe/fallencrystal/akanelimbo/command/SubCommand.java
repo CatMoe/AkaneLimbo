@@ -1,4 +1,4 @@
-package catmoe.fallencrystal.limborule.command;
+package catmoe.fallencrystal.akanelimbo.command;
 
 import java.util.List;
 import java.util.Map;

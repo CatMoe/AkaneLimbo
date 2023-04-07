@@ -1,4 +1,4 @@
-package catmoe.fallencrystal.limborule.util;
+package catmoe.fallencrystal.akanelimbo.util;
 
 import java.util.ArrayList;
 import java.util.List;

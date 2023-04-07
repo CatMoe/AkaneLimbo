@@ -1,4 +1,4 @@
-package catmoe.fallencrystal.limborule.util.menu;
+package catmoe.fallencrystal.akanelimbo.util.menu;
 
 public class ForceFormatCode {
     public static String replaceFormat(String str) {

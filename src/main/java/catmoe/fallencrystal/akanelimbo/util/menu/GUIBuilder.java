@@ -1,4 +1,4 @@
-package catmoe.fallencrystal.limborule.util.menu;
+package catmoe.fallencrystal.akanelimbo.util.menu;
 
 import java.util.ArrayList;
 import java.util.HashMap;

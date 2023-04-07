@@ -1,7 +1,6 @@
-package catmoe.fallencrystal.limborule.trigger;
+package catmoe.fallencrystal.akanelimbo.trigger;
 
-import catmoe.fallencrystal.limborule.util.MessageUtil;
-
+import catmoe.fallencrystal.akanelimbo.util.MessageUtil;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;

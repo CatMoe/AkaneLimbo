@@ -1,12 +1,13 @@
-package catmoe.fallencrystal.limborule.kick;
+package catmoe.fallencrystal.akanelimbo.kick;
 
 import java.util.Arrays;
 import java.util.List;
 
-import catmoe.fallencrystal.limborule.util.MessageUtil;
-import catmoe.fallencrystal.limborule.util.menu.ForceFormatCode;
-import catmoe.fallencrystal.limborule.util.menu.GUIBuilder;
-import catmoe.fallencrystal.limborule.util.menu.ItemBuilder;
+import catmoe.fallencrystal.akanelimbo.util.MessageUtil;
+import catmoe.fallencrystal.akanelimbo.util.ServerOnlineCheck;
+import catmoe.fallencrystal.akanelimbo.util.menu.ForceFormatCode;
+import catmoe.fallencrystal.akanelimbo.util.menu.GUIBuilder;
+import catmoe.fallencrystal.akanelimbo.util.menu.ItemBuilder;
 import dev.simplix.protocolize.api.inventory.InventoryClick;
 import dev.simplix.protocolize.api.inventory.InventoryClose;
 import dev.simplix.protocolize.data.ItemType;
@@ -80,10 +81,18 @@ public class KickMenu extends GUIBuilder {
 
     public void onClick(InventoryClick e) {
         if (e.slot() == 11 && e.clickedItem().itemType() == ItemType.REPEATER) {
+            if (!isOnline(disconnectfrom)) {
+                MessageUtil.actionbar(getPlayer(), "&c目标服务器似乎已离线 请稍后再试");
+                return;
+            }
             getPlayer().connect(disconnectfrom);
             update();
             MessageUtil.actionbar(getPlayer(), "&a正在尝试重新连接 请稍后..");
         } else if (e.slot() == 15 && e.clickedItem().itemType() == ItemType.BEACON) {
+            if (!isOnline(lobbyserver)) {
+                MessageUtil.actionbar(getPlayer(), "&c目标服务器似乎已离线 请稍后再试");
+                return;
+            }
             getPlayer().connect(lobbyserver);
             update();
             MessageUtil.actionbar(getPlayer(), "&a正在将您传送到大厅..");
@@ -93,11 +102,16 @@ public class KickMenu extends GUIBuilder {
     }
 
     public void onClose(InventoryClose e) {
-        if (!close) {
-            open(getPlayer());
-            MessageUtil.actionbar(getPlayer(), "&b别忘了这可是不存在的地方 关闭了就出不来了哦~");
-        } else {
-            close();
+        try {
+            if (!close) {
+                open(getPlayer());
+                MessageUtil.actionbar(getPlayer(), "&b别忘了这可是不存在的地方 关闭了就出不来了哦~");
+            } else {
+                close();
+            }
+            // 如果玩家离开造成的NullPointerException 则关闭菜单
+        } catch (NullPointerException ex) {
+            close = true;
         }
     }
 
@@ -110,6 +124,16 @@ public class KickMenu extends GUIBuilder {
             close = true;
             close();
         }
+    }
+
+    public boolean isOnline(ServerInfo server) {
+        if (!ServerOnlineCheck.SocketPing(server)) {
+            return false;
+        }
+        if (!ServerOnlineCheck.MOTDPing(server)) {
+            return false;
+        }
+        return true;
     }
 
 }

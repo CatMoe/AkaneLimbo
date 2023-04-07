@@ -1,9 +1,10 @@
-package catmoe.fallencrystal.limborule;
+package catmoe.fallencrystal.akanelimbo;
 
-import catmoe.fallencrystal.limborule.command.CommandManager;
-import catmoe.fallencrystal.limborule.command.commands.SendLimbo;
-import catmoe.fallencrystal.limborule.kick.KickRedirect;
-import catmoe.fallencrystal.limborule.util.MessageUtil;
+import catmoe.fallencrystal.akanelimbo.command.CommandManager;
+import catmoe.fallencrystal.akanelimbo.command.commands.SendLimbo;
+import catmoe.fallencrystal.akanelimbo.kick.KickRedirect;
+import catmoe.fallencrystal.akanelimbo.rule.RuleHandler;
+import catmoe.fallencrystal.akanelimbo.util.MessageUtil;
 
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.plugin.Plugin;
@@ -15,8 +16,10 @@ public class AkaneLimbo extends Plugin {
         instance = this;
         ProxyServer proxy = ProxyServer.getInstance();
         proxy.getPluginManager().registerListener(instance, new KickRedirect());
+        proxy.getPluginManager().registerListener(instance, new RuleHandler());
         // proxy.getPluginManager().registerListener(instance, new Trigger());
-        MessageUtil.loginfo("&bLimbo&dRule &7> &b偷偷摸摸载入 应该没人会发现的叭..");
+        LoadCommand();
+        MessageUtil.loginfo("&b偷偷摸摸载入 应该没人会发现的叭..");
     }
 
     public static AkaneLimbo getInstance() {
@@ -24,11 +27,12 @@ public class AkaneLimbo extends Plugin {
     }
 
     public void onDisable() {
-        MessageUtil.loginfo("&bLimbo&dRule &7> &b其实吧 这个插件轻到连卸载都不需要 w=");
+        MessageUtil.loginfo("&b其实吧 这个插件轻到连卸载都不需要 w=");
     }
 
     public void LoadCommand() {
         CommandManager commandManager = new CommandManager(instance, "akanelimbo", "", "akanelimbo", "limbo");
         commandManager.register(new SendLimbo());
+        ProxyServer.getInstance().getPluginManager().registerCommand(instance, commandManager);
     }
 }

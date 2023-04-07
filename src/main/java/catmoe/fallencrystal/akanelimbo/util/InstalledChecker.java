@@ -1,4 +1,4 @@
-package catmoe.fallencrystal.limborule.util;
+package catmoe.fallencrystal.akanelimbo.util;
 
 import net.md_5.bungee.api.ProxyServer;
 
