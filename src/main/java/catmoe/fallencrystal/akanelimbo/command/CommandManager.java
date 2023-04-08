@@ -1,23 +1,18 @@
 package catmoe.fallencrystal.akanelimbo.command;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import catmoe.fallencrystal.akanelimbo.util.MessageUtil;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Command;
-import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.api.plugin.TabExecutor;
 
 public class CommandManager extends Command implements TabExecutor {
     private final List<SubCommand> loadedCommands;
     private final List<String> tabComplete;
 
-    public CommandManager(Plugin plugin, String name, String permission, String... aliases) {
+    public CommandManager(String name, String permission, String... aliases) {
         super(name, permission, aliases);
         this.loadedCommands = new ArrayList<>();
         this.tabComplete = new ArrayList<>();
@@ -43,9 +38,6 @@ public class CommandManager extends Command implements TabExecutor {
             if (cmd.StrictSizeLimit()) {
                 if (args.length == cmd.StrictSize()) {
                     cmd.execute(sender, args);
-                    return;
-                } else {
-                    return; // command length not equal command need.
                 }
             } else {
                 cmd.execute(sender, args);
@@ -57,7 +49,7 @@ public class CommandManager extends Command implements TabExecutor {
     public Iterable<String> onTabComplete(CommandSender sender, String[] args) {
         SubCommand subCommand = getSubCommandFromArgs(args[0]);
         Map<Integer, List<String>> map = new HashMap<>();
-        map.put(args.length - 1, Arrays.asList("<Null>"));
+        map.put(args.length - 1, Collections.singletonList("<Null>"));
         if (subCommand != null && args[0].equals(subCommand.getSubCommandId())) {
             if (subCommand.getTabCompleter() != null && subCommand.getTabCompleter().get(args.length - 1) != null) {
                 return subCommand.getTabCompleter().get(args.length - 1);

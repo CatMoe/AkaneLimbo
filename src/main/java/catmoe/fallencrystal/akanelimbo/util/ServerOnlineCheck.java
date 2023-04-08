@@ -18,22 +18,4 @@ public class ServerOnlineCheck {
             return false;
         }
     }
-
-    public static boolean MOTDPing(ServerInfo server) {
-        try {
-            if (server.getMotd() != null) {
-                return true;
-            }
-            if (!server.getMotd().equals("")) {
-                return true;
-            }
-        } catch (Exception e) {
-            return false;
-        }
-        return false;
-    }
-
-    public static String getMotd(ServerInfo server) {
-        return server.getMotd();
-    }
 }

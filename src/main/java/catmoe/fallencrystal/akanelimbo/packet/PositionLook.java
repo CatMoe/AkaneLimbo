@@ -199,8 +199,8 @@ public class PositionLook extends AbstractPacket {
     }
 
     public int hashCode() {
-        return Objects.hash(new Object[] { Double.valueOf(x), Double.valueOf(y), Double.valueOf(z), Float.valueOf(yaw),
-                Float.valueOf(pitch), Byte.valueOf(flags), Integer.valueOf(teleportId),
-                Boolean.valueOf(dismountVehicle) });
+        return Objects.hash(new Object[] {x, y, z, yaw,
+                pitch, flags, teleportId,
+                dismountVehicle});
     }
 }

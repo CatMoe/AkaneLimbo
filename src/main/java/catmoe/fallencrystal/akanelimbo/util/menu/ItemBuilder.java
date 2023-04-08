@@ -177,8 +177,7 @@ public class ItemBuilder {
         CompoundTag nbt = item.nbtData();
         if (!enchantments.isEmpty()) {
             ListTag<CompoundTag> enchantments = (ListTag<CompoundTag>) ListTag.createUnchecked(CompoundTag.class);
-            for (int i = 0; i < this.enchantments.size(); i++) {
-                GUIEnchantUtil enchantment = this.enchantments.get(i);
+            for (GUIEnchantUtil enchantment : this.enchantments) {
                 CompoundTag enchant = new CompoundTag();
                 enchant.putString("id", enchantment.getEnchantment().getString());
                 enchant.putInt("lvl", enchantment.getLevel());

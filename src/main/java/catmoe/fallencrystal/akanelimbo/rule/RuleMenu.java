@@ -141,7 +141,6 @@ public class RuleMenu extends GUIBuilder {
                     .lore(ca(empty))
                     .lore(ca(RuleAccept))
                     .build());
-            return;
         } else {
             setItem(RuleGeneralItemSlot, new ItemBuilder(ItemType.PAPER)
                     .enchantment(GUIEnchantsList.UNBREAKING, 1)
@@ -168,7 +167,6 @@ public class RuleMenu extends GUIBuilder {
                     .lore(ca(empty))
                     .lore(ca(RuleDeny))
                     .build());
-            return;
         }
     }
 
@@ -205,7 +203,6 @@ public class RuleMenu extends GUIBuilder {
                     .lore(ca(empty))
                     .lore(ca(RuleAccept))
                     .build());
-            return;
         } else {
             setItem(RulePrivacyItemSlot, new ItemBuilder(ItemType.PAPER)
                     .enchantment(GUIEnchantsList.UNBREAKING, 1)
@@ -227,7 +224,6 @@ public class RuleMenu extends GUIBuilder {
                     .lore(ca(empty))
                     .lore(ca(RuleDeny))
                     .build());
-            return;
         }
     }
 
@@ -255,7 +251,6 @@ public class RuleMenu extends GUIBuilder {
                     .lore(ca(RuleAccept))
                     .build());
             RuleNotReadedItem = true;
-            return;
         } else {
             // 当有憨批真的去点了这个物品
             if (!RuleNotReadedItem) {
@@ -275,14 +270,13 @@ public class RuleMenu extends GUIBuilder {
                         .lore(ca(empty))
                         .lore(ca(RuleDeny))
                         .build());
-                return;
             }
         }
     }
 
     public void AgreeItem() {
         // 这是个陷阱!
-        if (RuleGeneral && RulePrivacy && RuleFinal && RuleNotReadedItem) {
+        if (RuleGeneral && RulePrivacy && RuleFinal && RuleNotReaded) {
             setItem(AgreeItemItemSlot, new ItemBuilder(ItemType.EMERALD_BLOCK)
                     .name(ca("&a同意用户协议"))
                     .lore(ca(""))
@@ -290,7 +284,6 @@ public class RuleMenu extends GUIBuilder {
                     .lore(ca(" "))
                     .lore(ca("&b点击加入服务器!"))
                     .build());
-            return;
         }
         // 未同意任何条例
         if (!RuleGeneral && !RulePrivacy && !RuleFinal && !RuleNotReadedItem) {
@@ -302,7 +295,6 @@ public class RuleMenu extends GUIBuilder {
                     .lore(ca(""))
                     .lore(ca("&c如果您确实不想同意任何条款 请直接点击此按钮"))
                     .build());
-            return;
         }
         // 已同意所有条例
         if (RuleGeneral && RulePrivacy && RuleFinal && !RuleNotReaded) {
@@ -314,7 +306,6 @@ public class RuleMenu extends GUIBuilder {
                     .lore(ca(" "))
                     .lore(ca("&b点击加入服务器!"))
                     .build());
-            return;
         } else { // 如果没有同意所有条例 展示的物品
             setItem(AgreeItemItemSlot, new ItemBuilder(ItemType.BEACON)
                     .name(ca("&e您还有条款未同意!"))
@@ -322,7 +313,6 @@ public class RuleMenu extends GUIBuilder {
                     .lore(ca(" &c如果您确实不想接受我们的条款"))
                     .lore(ca(" &c请直接点击此按钮"))
                     .build());
-            return;
         }
     }
 
@@ -336,35 +326,19 @@ public class RuleMenu extends GUIBuilder {
         } else if (e.slot() == AgreeItemItemSlot && e.clickedItem().itemType() == ItemType.REDSTONE_BLOCK) {
             disconnect(getPlayer(), "&c下次再见!");
         } else if (e.slot() == RuleFinalItemSlot && e.clickedItem().itemType() == ItemType.PAPER) {
-            if (!RuleFinal) {
-                RuleFinal = true;
-            } else {
-                RuleFinal = false;
-            }
+            RuleFinal = !RuleFinal;
             open(getPlayer());
         } else if (e.slot() == RuleGeneralItemSlot && e.clickedItem().itemType() == ItemType.PAPER) {
-            if (!RuleGeneral) {
-                RuleGeneral = true;
-            } else {
-                RuleGeneral = false;
-            }
+            RuleGeneral = !RuleGeneral;
             open(getPlayer());
         } else if (e.slot() == RulePrivacyItemSlot && e.clickedItem().itemType() == ItemType.PAPER) {
-            if (!RulePrivacy) {
-                RulePrivacy = true;
-            } else {
-                RulePrivacy = false;
-            }
+            RulePrivacy = !RulePrivacy;
             open(getPlayer());
         } else if (e.slot() == RuleNotReadedItemSlot && e.clickedItem().itemType() == ItemType.PAPER) {
             if (!RuleNotReaded) {
                 RuleNotReaded = true;
             } else {
-                if (!RuleNotReadedItem) {
-                    RuleNotReaded = true;
-                } else {
-                    RuleNotReadedItem = false;
-                }
+                RuleNotReadedItem = !RuleNotReadedItem;
             }
             open(getPlayer());
         } else {
@@ -390,7 +364,6 @@ public class RuleMenu extends GUIBuilder {
             // 用法详见KickMenu
         } catch (NullPointerException ex) {
             close = true;
-            return;
         }
     }
 

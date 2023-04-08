@@ -12,23 +12,17 @@ import dev.simplix.protocolize.api.inventory.InventoryClick;
 import dev.simplix.protocolize.api.inventory.InventoryClose;
 import dev.simplix.protocolize.data.ItemType;
 import dev.simplix.protocolize.data.inventory.InventoryType;
+import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.ServerConnectedEvent;
+import net.md_5.bungee.api.event.ServerKickEvent;
 
 public class KickMenu extends GUIBuilder {
 
-    ServerInfo disconnectfrom = null;
-    ServerInfo limboserver = null;
-    ServerInfo lobbyserver = null;
-
+    ServerInfo defaultserver = null;
+    ServerInfo kickfrom = null;
     boolean close = false;
-
-    public void SetInfo(ServerInfo incomingserver, ServerInfo incominglimbo, ServerInfo incominglobby) {
-        disconnectfrom = incomingserver;
-        limboserver = incominglimbo;
-        lobbyserver = incominglobby;
-    }
 
     public void update() {
         clear();
@@ -70,7 +64,7 @@ public class KickMenu extends GUIBuilder {
                 .lore(ca(""))
                 .lore(ca("&c如果服务器长时间离线 请报告给管理员!"))
                 .lore(ca(""))
-                .lore(ca("&7离线时所处服务器: " + disconnectfrom.getName()))
+                .lore(ca("&7离线时所处服务器: " + kickfrom.getName()))
                 .build());
         setItem(15, new ItemBuilder(ItemType.BEACON)
                 .name(ca("&c回到大厅"))
@@ -81,19 +75,19 @@ public class KickMenu extends GUIBuilder {
 
     public void onClick(InventoryClick e) {
         if (e.slot() == 11 && e.clickedItem().itemType() == ItemType.REPEATER) {
-            if (!isOnline(disconnectfrom)) {
+            if (isOnline(kickfrom)) {
                 MessageUtil.actionbar(getPlayer(), "&c目标服务器似乎已离线 请稍后再试");
                 return;
             }
-            getPlayer().connect(disconnectfrom);
+            getPlayer().connect(kickfrom);
             update();
             MessageUtil.actionbar(getPlayer(), "&a正在尝试重新连接 请稍后..");
         } else if (e.slot() == 15 && e.clickedItem().itemType() == ItemType.BEACON) {
-            if (!isOnline(lobbyserver)) {
+            if (isOnline(defaultserver)) {
                 MessageUtil.actionbar(getPlayer(), "&c目标服务器似乎已离线 请稍后再试");
                 return;
             }
-            getPlayer().connect(lobbyserver);
+            getPlayer().connect(defaultserver);
             update();
             MessageUtil.actionbar(getPlayer(), "&a正在将您传送到大厅..");
         } else {
@@ -127,13 +121,14 @@ public class KickMenu extends GUIBuilder {
     }
 
     public boolean isOnline(ServerInfo server) {
-        if (!ServerOnlineCheck.SocketPing(server)) {
-            return false;
-        }
-        if (!ServerOnlineCheck.MOTDPing(server)) {
-            return false;
-        }
-        return true;
+        return ServerOnlineCheck.SocketPing(server);
+    }
+
+    @SuppressWarnings("deprecation")
+    public void handleevent(ServerKickEvent e) {
+        kickfrom = e.getKickedFrom();
+        defaultserver = ProxyServer.getInstance().getServerInfo(
+                ProxyServer.getInstance().getConfig().getListeners().iterator().next().getDefaultServer());
     }
 
 }

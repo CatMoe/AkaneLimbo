@@ -20,7 +20,6 @@ public class RuleHandler implements Listener {
             // 从其它服务器跳转
             if (e.getFrom().equals(switchfrom) && target.equals(logined)) {
                 Trigger(p);
-                return;
             }
             // 使用try方法捕获null 表明玩家直接连接到该服务器
         } catch (NullPointerException ex) {
@@ -32,8 +31,21 @@ public class RuleHandler implements Listener {
     }
 
     public void Trigger(ProxiedPlayer p) {
+        if (hasBypassPermission(p)) {
+            Skip(p);
+            return;
+        }
         RuleMenu menu = new RuleMenu();
         menu.close = false;
         menu.open(p);
+    }
+
+    public boolean hasBypassPermission(ProxiedPlayer p) {
+        return p.hasPermission("rule.bypass");
+    }
+
+    public void Skip(ProxiedPlayer p) {
+        ServerInfo lobby = ProxyServer.getInstance().getServerInfo("Lobby-1");
+        p.connect(lobby);
     }
 }

@@ -27,11 +27,4 @@ public class LimboCreater {
         e.setCancelled(true);
         e.setCancelServer(server);
     }
-
-    public void RemoveServer(ProxiedPlayer p, String name) {
-        String target = "AkaneLimbo -> " + name;
-        if (ProxyServer.getInstance().getServers().containsKey(target)) {
-            ProxyServer.getInstance().getServers().remove(target);
-        }
-    }
 }

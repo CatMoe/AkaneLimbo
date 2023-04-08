@@ -4,6 +4,7 @@ import catmoe.fallencrystal.akanelimbo.command.CommandManager;
 import catmoe.fallencrystal.akanelimbo.command.commands.SendLimbo;
 import catmoe.fallencrystal.akanelimbo.kick.KickRedirect;
 import catmoe.fallencrystal.akanelimbo.rule.RuleHandler;
+import catmoe.fallencrystal.akanelimbo.serverlist.ServerListCommand;
 import catmoe.fallencrystal.akanelimbo.util.MessageUtil;
 
 import net.md_5.bungee.api.ProxyServer;
@@ -31,8 +32,9 @@ public class AkaneLimbo extends Plugin {
     }
 
     public void LoadCommand() {
-        CommandManager commandManager = new CommandManager(instance, "akanelimbo", "", "akanelimbo", "limbo");
+        CommandManager commandManager = new CommandManager("akanelimbo", "", "akanelimbo", "limbo");
         commandManager.register(new SendLimbo());
+        commandManager.register(new ServerListCommand());
         ProxyServer.getInstance().getPluginManager().registerCommand(instance, commandManager);
     }
 }
