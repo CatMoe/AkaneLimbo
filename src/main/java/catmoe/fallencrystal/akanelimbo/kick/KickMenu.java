@@ -8,14 +8,15 @@ import catmoe.fallencrystal.akanelimbo.util.ServerOnlineCheck;
 import catmoe.fallencrystal.akanelimbo.util.menu.ForceFormatCode;
 import catmoe.fallencrystal.akanelimbo.util.menu.GUIBuilder;
 import catmoe.fallencrystal.akanelimbo.util.menu.ItemBuilder;
+
 import dev.simplix.protocolize.api.inventory.InventoryClick;
 import dev.simplix.protocolize.api.inventory.InventoryClose;
 import dev.simplix.protocolize.data.ItemType;
 import dev.simplix.protocolize.data.inventory.InventoryType;
+
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
-import net.md_5.bungee.api.event.ServerConnectedEvent;
 import net.md_5.bungee.api.event.ServerKickEvent;
 
 public class KickMenu extends GUIBuilder {
@@ -75,7 +76,7 @@ public class KickMenu extends GUIBuilder {
 
     public void onClick(InventoryClick e) {
         if (e.slot() == 11 && e.clickedItem().itemType() == ItemType.REPEATER) {
-            if (isOnline(kickfrom)) {
+            if (NotOnline(kickfrom)) {
                 MessageUtil.actionbar(getPlayer(), "&c目标服务器似乎已离线 请稍后再试");
                 return;
             }
@@ -83,7 +84,7 @@ public class KickMenu extends GUIBuilder {
             update();
             MessageUtil.actionbar(getPlayer(), "&a正在尝试重新连接 请稍后..");
         } else if (e.slot() == 15 && e.clickedItem().itemType() == ItemType.BEACON) {
-            if (isOnline(defaultserver)) {
+            if (NotOnline(defaultserver)) {
                 MessageUtil.actionbar(getPlayer(), "&c目标服务器似乎已离线 请稍后再试");
                 return;
             }
@@ -104,8 +105,7 @@ public class KickMenu extends GUIBuilder {
                 close();
             }
             // 如果玩家离开造成的NullPointerException 则关闭菜单
-        } catch (NullPointerException ex) {
-            close = true;
+        } catch (NullPointerException ignore) {
         }
     }
 
@@ -113,15 +113,8 @@ public class KickMenu extends GUIBuilder {
         return ForceFormatCode.replaceFormat(text);
     }
 
-    public void isConnected(ServerConnectedEvent e) {
-        if (e.getPlayer().equals(getPlayer())) {
-            close = true;
-            close();
-        }
-    }
-
-    public boolean isOnline(ServerInfo server) {
-        return ServerOnlineCheck.SocketPing(server);
+    public boolean NotOnline(ServerInfo server) {
+        return !ServerOnlineCheck.SocketPing(server);
     }
 
     @SuppressWarnings("deprecation")

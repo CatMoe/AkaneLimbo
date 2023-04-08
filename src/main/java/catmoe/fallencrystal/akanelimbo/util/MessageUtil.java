@@ -1,8 +1,5 @@
 package catmoe.fallencrystal.akanelimbo.util;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.CommandSender;
@@ -19,7 +16,7 @@ public class MessageUtil {
 
     public static void actionbar(ProxiedPlayer p, String message) {
         try {
-            if (!(p instanceof ProxiedPlayer)) {
+            if (p == null) {
                 logerror("Cannot send actionbar for console.");
                 logerror("Message: " + message);
                 throw new RuntimeException("Cannot send actionbar for console");
@@ -37,15 +34,12 @@ public class MessageUtil {
 
     public static void rawchat(ProxiedPlayer p, String message) {
         try {
-            if (!(p instanceof ProxiedPlayer)) {
+            if (p == null) {
                 loginfo(message);
                 return;
             }
-            List<ProxiedPlayer> chatp = new ArrayList<>();
-            chatp.add(p);
             p.sendMessage(
                     ChatMessageType.CHAT, new TextComponent(ca(message)));
-            chatp.remove(p);
         } catch (Exception e) {
             logerror("MessageSendUtil occurred exception");
             logerror("Type: Chat");
@@ -78,14 +72,6 @@ public class MessageUtil {
 
     public static void fulltitle(ProxiedPlayer p, String title, String subtitle, int stay, int fadeIn, int fadeOut) {
         try {
-            if (!(p instanceof ProxiedPlayer)) {
-                logerror("Cannot send title for console.");
-                logerror("Title: " + title);
-                logerror("Subtitle" + subtitle);
-                logerror("Stay" + stay + ", " + "FadeIn" + fadeIn + ", " + "FadeOut" + fadeOut);
-                logerror("Target: " + p);
-                throw new RuntimeException("Cannot send fulltitle for console");
-            }
             Title t = ProxyServer.getInstance().createTitle();
             t.title(new TextComponent(ca(title)));
             t.subTitle(new TextComponent(ca(subtitle)));

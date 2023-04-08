@@ -15,16 +15,16 @@ public class AkaneLimbo extends Plugin {
 
     public void onEnable() {
         instance = this;
-        ProxyServer proxy = ProxyServer.getInstance();
-        proxy.getPluginManager().registerListener(instance, new KickRedirect());
-        proxy.getPluginManager().registerListener(instance, new RuleHandler());
+        RegisterListener();
         // proxy.getPluginManager().registerListener(instance, new Trigger());
         LoadCommand();
         MessageUtil.loginfo("&b偷偷摸摸载入 应该没人会发现的叭..");
     }
 
-    public static AkaneLimbo getInstance() {
-        return instance;
+    public void RegisterListener() {
+        ProxyServer proxy = ProxyServer.getInstance();
+        proxy.getPluginManager().registerListener(instance, new KickRedirect());
+        proxy.getPluginManager().registerListener(instance, new RuleHandler());
     }
 
     public void onDisable() {
