@@ -276,7 +276,7 @@ public class RuleMenu extends GUIBuilder {
 
     public void AgreeItem() {
         // 这是个陷阱!
-        if (RuleGeneral && RulePrivacy && RuleFinal && RuleNotReaded) {
+        if (RuleGeneral && RulePrivacy && RuleFinal && RuleNotReaded && RuleNotReadedItem) {
             setItem(AgreeItemItemSlot, new ItemBuilder(ItemType.EMERALD_BLOCK)
                     .name(ca("&a同意用户协议"))
                     .lore(ca(""))
@@ -284,6 +284,7 @@ public class RuleMenu extends GUIBuilder {
                     .lore(ca(" "))
                     .lore(ca("&b点击加入服务器!"))
                     .build());
+            return;
         }
         // 未同意任何条例
         if (!RuleGeneral && !RulePrivacy && !RuleFinal && !RuleNotReadedItem) {
@@ -295,6 +296,7 @@ public class RuleMenu extends GUIBuilder {
                     .lore(ca(""))
                     .lore(ca("&c如果您确实不想同意任何条款 请直接点击此按钮"))
                     .build());
+            return;
         }
         // 已同意所有条例
         if (RuleGeneral && RulePrivacy && RuleFinal && !RuleNotReaded) {
@@ -317,30 +319,17 @@ public class RuleMenu extends GUIBuilder {
     }
 
     public void onClick(InventoryClick e) {
-        if (e.slot() == AgreeItemItemSlot && RuleNotReaded && e.clickedItem().itemType() == ItemType.EMERALD_BLOCK) {
-            disconnect(getPlayer(), "&c你真的认真阅读并同意用户协议了吗?");
-        } else if (e.slot() == AgreeItemItemSlot && e.clickedItem().itemType() == ItemType.BEACON && RuleGeneral
-                && RulePrivacy && RuleFinal && !RuleNotReaded) {
-            getPlayer().connect(ProxyServer.getInstance().getServerInfo("Lobby-1"));
-            close = true;
-        } else if (e.slot() == AgreeItemItemSlot && e.clickedItem().itemType() == ItemType.REDSTONE_BLOCK) {
+        if (e.slot() == AgreeItemItemSlot && RuleNotReaded && e.clickedItem().itemType() == ItemType.EMERALD_BLOCK) {disconnect(getPlayer(), "&c你真的认真阅读并同意用户协议了吗?");}
+        else if (e.slot() == AgreeItemItemSlot && e.clickedItem().itemType() == ItemType.BEACON && RuleGeneral && RulePrivacy && RuleFinal && !RuleNotReaded) {
+            getPlayer().connect(ProxyServer.getInstance().getServerInfo("Lobby-1")); close = true;}
+        else if (e.slot() == AgreeItemItemSlot && e.clickedItem().itemType() == ItemType.REDSTONE_BLOCK) {disconnect(getPlayer(), "&c下次再见!");}
+        else if (e.slot() == RuleFinalItemSlot && e.clickedItem().itemType() == ItemType.PAPER) {RuleFinal = !RuleFinal; open(getPlayer());}
+        else if (e.slot() == RuleGeneralItemSlot && e.clickedItem().itemType() == ItemType.PAPER) {RuleGeneral = !RuleGeneral; open(getPlayer());}
+        else if (e.slot() == RulePrivacyItemSlot && e.clickedItem().itemType() == ItemType.PAPER) {RulePrivacy = !RulePrivacy; open(getPlayer());}
+        else if (e.slot() == RuleNotReadedItemSlot && e.clickedItem().itemType() == ItemType.PAPER) {if (!RuleNotReaded) {RuleNotReaded = true;} else {RuleNotReadedItem = !RuleNotReadedItem;}
+            open(getPlayer());
+        } else if (e.slot() == AgreeItemItemSlot && e.clickedItem().itemType() == ItemType.BEACON && !(RuleGeneral && RulePrivacy && RuleFinal && !RuleNotReaded)) {
             disconnect(getPlayer(), "&c下次再见!");
-        } else if (e.slot() == RuleFinalItemSlot && e.clickedItem().itemType() == ItemType.PAPER) {
-            RuleFinal = !RuleFinal;
-            open(getPlayer());
-        } else if (e.slot() == RuleGeneralItemSlot && e.clickedItem().itemType() == ItemType.PAPER) {
-            RuleGeneral = !RuleGeneral;
-            open(getPlayer());
-        } else if (e.slot() == RulePrivacyItemSlot && e.clickedItem().itemType() == ItemType.PAPER) {
-            RulePrivacy = !RulePrivacy;
-            open(getPlayer());
-        } else if (e.slot() == RuleNotReadedItemSlot && e.clickedItem().itemType() == ItemType.PAPER) {
-            if (!RuleNotReaded) {
-                RuleNotReaded = true;
-            } else {
-                RuleNotReadedItem = !RuleNotReadedItem;
-            }
-            open(getPlayer());
         } else {
             open(getPlayer());
         }

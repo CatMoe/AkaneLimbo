@@ -7,6 +7,9 @@ import net.md_5.bungee.api.event.ServerSwitchEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 public class RuleHandler implements Listener {
 
     ServerInfo switchfrom = ProxyServer.getInstance().getServerInfo("LoginLimbo");
@@ -35,9 +38,17 @@ public class RuleHandler implements Listener {
             Skip(p);
             return;
         }
-        RuleMenu menu = new RuleMenu();
-        menu.close = false;
-        menu.open(p);
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                try {
+                    RuleMenu menu = new RuleMenu();
+                    menu.close = false;
+                    menu.open(p);
+                } catch (NullPointerException ignore) {}
+            }
+        }, 1500);
     }
 
     public boolean hasBypassPermission(ProxiedPlayer p) {
