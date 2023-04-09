@@ -403,7 +403,7 @@ class RuleMenu : GUIBuilder() {
 
     private fun setIsRead(p: ProxiedPlayer) {
         val read = SaveReadUtil()
-        read.LoadData()
+        read.loadData()
         read.setData(p, !p.hasPermission(StringManager.getForceUnreadPermission()))
     }
 }

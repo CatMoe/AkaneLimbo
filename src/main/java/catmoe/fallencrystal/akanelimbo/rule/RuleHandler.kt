@@ -59,8 +59,8 @@ class RuleHandler : Listener {
 
     private fun checkIsRead(p: ProxiedPlayer?): Boolean {
         val file = SaveReadUtil()
-        file.LoadData()
-        return file.getPlayerData(p)
+        file.loadData()
+        return file.getPlayerData(p!!)
     }
 
     private fun skip(p: ProxiedPlayer) {
