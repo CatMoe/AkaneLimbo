@@ -1,30 +1,30 @@
-package catmoe.fallencrystal.akanelimbo.util;
+package catmoe.fallencrystal.akanelimbo.util
 
-import java.net.InetSocketAddress;
+import catmoe.fallencrystal.akanelimbo.StringManager
+import net.md_5.bungee.api.ProxyServer
+import net.md_5.bungee.api.config.ServerInfo
+import net.md_5.bungee.api.connection.ProxiedPlayer
+import net.md_5.bungee.api.event.ServerKickEvent
+import java.net.InetSocketAddress
 
-import net.md_5.bungee.api.ProxyServer;
-import net.md_5.bungee.api.config.ServerInfo;
-import net.md_5.bungee.api.connection.ProxiedPlayer;
-import net.md_5.bungee.api.event.ServerKickEvent;
-
-public class LimboCreater {
-    String Address = "127.0.0.1";
-    int port = 3;
-    ServerInfo server = null;
-
-    public void CreateServer(ProxiedPlayer p, String name) {
-        String target = "AkaneLimbo -> " + name;
-        server = ProxyServer.getInstance().constructServerInfo(target,
-                new InetSocketAddress(Address, port),
-                "Limbo for player" + p.getDisplayName() + "(" + p.getUniqueId() + ")", false);
+class LimboCreater {
+    private var address = "127.0.0.1"
+    private var port = 3
+    private var server: ServerInfo? = null
+    fun createServer(p: ProxiedPlayer, name: String) {
+        val target = StringManager.getLimboPrefix() + StringManager.getLimboArrow() + name
+        server = ProxyServer.getInstance().constructServerInfo(
+            target, InetSocketAddress(address, port),
+            "Limbo for player" + p.displayName + "(" + p.uniqueId + ")", false
+        )
     }
 
-    public void Connect(ProxiedPlayer p) {
-        p.connect(server);
+    fun connect(p: ProxiedPlayer) {
+        p.connect(server)
     }
 
-    public void Connect2(ServerKickEvent e) {
-        e.setCancelled(true);
-        e.setCancelServer(server);
+    fun connect2(e: ServerKickEvent) {
+        e.isCancelled = true
+        e.cancelServer = server
     }
 }

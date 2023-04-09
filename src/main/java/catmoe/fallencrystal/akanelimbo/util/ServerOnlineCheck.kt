@@ -1,21 +1,23 @@
-package catmoe.fallencrystal.akanelimbo.util;
+package catmoe.fallencrystal.akanelimbo.util
 
-import java.net.InetSocketAddress;
-import java.net.Socket;
+import net.md_5.bungee.api.config.ServerInfo
+import java.net.InetSocketAddress
+import java.net.Socket
 
-import net.md_5.bungee.api.config.ServerInfo;
-
-public class ServerOnlineCheck {
-    @SuppressWarnings("deprecation")
-    public static boolean SocketPing(ServerInfo server) {
-        try {
-            Socket socket = new Socket();
-            socket.connect(new InetSocketAddress(server.getAddress().getAddress(), server.getAddress().getPort()),
-                    1000);
-            socket.close();
-            return true;
-        } catch (Exception e) {
-            return false;
+object ServerOnlineCheck {
+    @Suppress("DEPRECATION")
+    @JvmStatic
+    fun socketPing(server: ServerInfo): Boolean {
+        return try {
+            val socket = Socket()
+            socket.connect(
+                InetSocketAddress(server.address.address, server.address.port),
+                1000
+            )
+            socket.close()
+            true
+        } catch (e: Exception) {
+            false
         }
     }
 }

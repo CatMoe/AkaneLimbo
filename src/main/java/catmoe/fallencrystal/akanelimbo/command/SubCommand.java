@@ -16,7 +16,7 @@ public interface SubCommand {
 
     boolean allowedConsole();
 
-    boolean StrictSizeLimit();
+    boolean strictSizeLimit();
 
-    int StrictSize();
+    int strictSize();
 }

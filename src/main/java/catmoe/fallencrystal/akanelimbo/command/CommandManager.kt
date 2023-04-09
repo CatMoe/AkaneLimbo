@@ -1,79 +1,72 @@
-package catmoe.fallencrystal.akanelimbo.command;
+package catmoe.fallencrystal.akanelimbo.command
 
-import java.util.*;
+import catmoe.fallencrystal.akanelimbo.util.MessageUtil.prefixsender
+import net.md_5.bungee.api.CommandSender
+import net.md_5.bungee.api.connection.ProxiedPlayer
+import net.md_5.bungee.api.plugin.Command
+import net.md_5.bungee.api.plugin.TabExecutor
 
-import catmoe.fallencrystal.akanelimbo.util.MessageUtil;
-import net.md_5.bungee.api.CommandSender;
-import net.md_5.bungee.api.connection.ProxiedPlayer;
-import net.md_5.bungee.api.plugin.Command;
-import net.md_5.bungee.api.plugin.TabExecutor;
+class CommandManager(name: String?, permission: String?, vararg aliases: String?) : Command(name, permission, *aliases),
+    TabExecutor {
+    private val loadedCommands: MutableList<SubCommand>
+    private val tabComplete: MutableList<String>
 
-public class CommandManager extends Command implements TabExecutor {
-    private final List<SubCommand> loadedCommands;
-    private final List<String> tabComplete;
-
-    public CommandManager(String name, String permission, String... aliases) {
-        super(name, permission, aliases);
-        this.loadedCommands = new ArrayList<>();
-        this.tabComplete = new ArrayList<>();
+    init {
+        loadedCommands = ArrayList()
+        tabComplete = ArrayList()
     }
 
-    @Override
-    public void execute(CommandSender sender, String[] args) {
-        if (args.length == 0) {
-            MessageUtil.prefixsender(sender, "idk");
-            return;
+    override fun execute(sender: CommandSender, args: Array<String>) {
+        if (args.isEmpty()) {
+            prefixsender(sender, "idk")
+            return
         }
-        SubCommand cmd = getSubCommandFromArgs(args[0]);
-        if (cmd == null) {
-            return; // 未找到命令
-        }
-        if (args[0].equals(cmd.getSubCommandId())) {
-            if (!cmd.allowedConsole() && !(sender instanceof ProxiedPlayer)) {
-                return; // not allowed console
+        val cmd = getSubCommandFromArgs(args[0])
+            ?: return  // 未找到命令
+        if (args[0] == cmd.subCommandId) {
+            if (!cmd.allowedConsole() && sender !is ProxiedPlayer) {
+                return  // not allowed console
             }
-            if (!sender.hasPermission(cmd.getPermission())) {
-                return; // dont have permission
+            if (!sender.hasPermission(cmd.permission)) {
+                return  // dont have permission
             }
-            if (cmd.StrictSizeLimit()) {
-                if (args.length == cmd.StrictSize()) {
-                    cmd.execute(sender, args);
+            if (cmd.strictSizeLimit()) {
+                if (args.size == cmd.strictSize()) {
+                    cmd.execute(sender, args)
                 }
             } else {
-                cmd.execute(sender, args);
+                cmd.execute(sender, args)
             }
         }
     }
 
-    @Override
-    public Iterable<String> onTabComplete(CommandSender sender, String[] args) {
-        SubCommand subCommand = getSubCommandFromArgs(args[0]);
-        Map<Integer, List<String>> map = new HashMap<>();
-        map.put(args.length - 1, Collections.singletonList("<Null>"));
-        if (subCommand != null && args[0].equals(subCommand.getSubCommandId())) {
-            if (subCommand.getTabCompleter() != null && subCommand.getTabCompleter().get(args.length - 1) != null) {
-                return subCommand.getTabCompleter().get(args.length - 1);
+    override fun onTabComplete(sender: CommandSender, args: Array<String>): Iterable<String> {
+        val subCommand = getSubCommandFromArgs(args[0])
+        val map: MutableMap<Int, List<String>> = HashMap()
+        map[args.size - 1] = listOf("<Null>")
+        if (subCommand != null && args[0] == subCommand.subCommandId) {
+            return if (subCommand.tabCompleter != null && subCommand.tabCompleter[args.size - 1] != null) {
+                subCommand.tabCompleter[args.size - 1]!!
             } else {
-                return map.get(args.length - 1);
+                map[args.size - 1]!!
             }
         }
-        if (args.length == 1) {
-            return tabComplete;
-        }
-        return map.get(args.length - 1);
+        return if (args.size == 1) {
+            tabComplete
+        } else map[args.size - 1]!!
     }
 
-    private SubCommand getSubCommandFromArgs(String args0) {
-        for (SubCommand subCommand : loadedCommands) {
-            if (subCommand.getSubCommandId().equals(args0)) {
-                return subCommand;
+    private fun getSubCommandFromArgs(args0: String): SubCommand? {
+        for (subCommand in loadedCommands) {
+            if (subCommand.subCommandId == args0) {
+                return subCommand
             }
         }
-        return null;
+        return null
     }
 
-    public void register(SubCommand subCommand) {
-        loadedCommands.add(subCommand);
-        tabComplete.add(subCommand.getSubCommandId());
+    fun register(subCommand: SubCommand) {
+        loadedCommands.add(subCommand)
+        tabComplete.add(subCommand.subCommandId)
     }
 }

@@ -188,10 +188,7 @@ public class PositionLook extends AbstractPacket {
         if (this.getTeleportId() != other.getTeleportId()) {
             return false;
         }
-        if (this.getDismountVehicle() != other.getDismountVehicle()) {
-            return false;
-        }
-        return true;
+        return this.getDismountVehicle() == other.getDismountVehicle();
     }
 
     protected boolean canEqual(Object other) {
@@ -199,8 +196,8 @@ public class PositionLook extends AbstractPacket {
     }
 
     public int hashCode() {
-        return Objects.hash(new Object[] {x, y, z, yaw,
+        return Objects.hash(x, y, z, yaw,
                 pitch, flags, teleportId,
-                dismountVehicle});
+                dismountVehicle);
     }
 }

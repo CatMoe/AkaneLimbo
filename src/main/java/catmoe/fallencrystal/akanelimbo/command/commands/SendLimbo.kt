@@ -1,86 +1,72 @@
-package catmoe.fallencrystal.akanelimbo.command.commands;
+package catmoe.fallencrystal.akanelimbo.command.commands
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import catmoe.fallencrystal.akanelimbo.StringManager
+import catmoe.fallencrystal.akanelimbo.command.SubCommand
+import catmoe.fallencrystal.akanelimbo.util.LimboCreater
+import catmoe.fallencrystal.akanelimbo.util.MessageUtil.prefixsender
+import net.md_5.bungee.api.CommandSender
+import net.md_5.bungee.api.ProxyServer
+import net.md_5.bungee.api.connection.ProxiedPlayer
 
-import catmoe.fallencrystal.akanelimbo.command.SubCommand;
-import catmoe.fallencrystal.akanelimbo.util.LimboCreater;
-import catmoe.fallencrystal.akanelimbo.util.MessageUtil;
-import net.md_5.bungee.api.CommandSender;
-import net.md_5.bungee.api.ProxyServer;
-import net.md_5.bungee.api.connection.ProxiedPlayer;
-
-public class SendLimbo implements SubCommand {
-
-    @Override
-    public void execute(CommandSender sender, String[] args) {
+class SendLimbo : SubCommand {
+    override fun execute(sender: CommandSender, args: Array<String>) {
         // 创建一个LimboCreater
-        LimboCreater limbo = new LimboCreater();
+        val limbo = LimboCreater()
         // 将自己发送到Limbo
-        if (args[1].equalsIgnoreCase("me")) {
-            if (!(sender instanceof ProxiedPlayer)) {
-                MessageUtil.prefixsender(sender, "&cConsole is a invalid target.");
-                return;
+        if (args[1].equals("me", ignoreCase = true)) {
+            if (sender !is ProxiedPlayer) {
+                prefixsender(sender, "&cConsole is a invalid target.")
+                return
             }
-            limbo.CreateServer((ProxiedPlayer) sender, "CmdCreate");
-            limbo.Connect((ProxiedPlayer) sender);
+            limbo.createServer(sender, StringManager.getCommandLimbo())
+            limbo.connect(sender)
         }
-        if (args[1].equalsIgnoreCase("all")) {
-            for (ProxiedPlayer p : ProxyServer.getInstance().getPlayers()) {
-                limbo.CreateServer(p, "CmdCreate");
-                limbo.Connect(p);
+        if (args[1].equals("all", ignoreCase = true)) {
+            for (p in ProxyServer.getInstance().players) {
+                limbo.createServer(p!!, StringManager.getCommandLimbo())
+                limbo.connect(p)
             }
         } else {
             try {
-                ProxiedPlayer p = ProxyServer.getInstance().getPlayer(args[1]);
+                val p = ProxyServer.getInstance().getPlayer(args[1])
                 if (p != null) {
-                    limbo.CreateServer(p, "CmdCreate");
-                    limbo.Connect(p);
+                    limbo.createServer(p, StringManager.getCommandLimbo())
+                    limbo.connect(p)
                 }
-            } catch (Exception e) {
-                return;
+            } catch (ignore: Exception) {
             }
         }
     }
 
-    @Override
-    public String getSubCommandId() {
-        return "sendlimbo";
+    override fun getSubCommandId(): String {
+        return "sendlimbo"
     }
 
-    @Override
-    public String getPermission() {
-        return "akanelimbo.sendlimbo";
+    override fun getPermission(): String {
+        return StringManager.getSendLimboPermission()
     }
 
-    @Override
-    public Map<Integer, List<String>> getTabCompleter() {
-        Map<Integer, List<String>> map = new HashMap<>();
-        ArrayList<String> Tip1 = new ArrayList<>();
-        for (ProxiedPlayer p : ProxyServer.getInstance().getPlayers()) {
-            Tip1.add(p.toString());
+    override fun getTabCompleter(): Map<Int, List<String>> {
+        val map: MutableMap<Int, List<String>> = HashMap()
+        val tip1 = ArrayList<String>()
+        for (p in ProxyServer.getInstance().players) {
+            tip1.add(p.toString())
         }
-        Tip1.add("me");
-        Tip1.add("all");
-        map.put(1, Tip1);
-        return map;
+        tip1.add("me")
+        tip1.add("all")
+        map[1] = tip1
+        return map
     }
 
-    @Override
-    public boolean allowedConsole() {
-        return true;
+    override fun allowedConsole(): Boolean {
+        return true
     }
 
-    @Override
-    public boolean StrictSizeLimit() {
-        return true;
+    override fun strictSizeLimit(): Boolean {
+        return true
     }
 
-    @Override
-    public int StrictSize() {
-        return 2;
+    override fun strictSize(): Int {
+        return 2
     }
-
 }

@@ -18,7 +18,7 @@ public class ForceFormatCode {
                 .replace("&6", "§6")
                 .replace("&7", "§7")
                 .replace("&8", "§8")
-                .replace("&9", "&9")
+                .replace("&9", "§9")
 
                 .replace("&k", "§k")
                 .replace("&l", "§l")

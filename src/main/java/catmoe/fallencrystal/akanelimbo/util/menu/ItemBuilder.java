@@ -72,7 +72,7 @@ public class ItemBuilder {
 
     public ItemBuilder enchantments(GUIEnchantsList[] enchantment, int level) {
         this.enchantments.clear();
-        Arrays.asList(enchantment).stream().forEach(e -> enchantment(e, level));
+        Arrays.stream(enchantment).forEach(e -> enchantment(e, level));
         return this;
     }
 
@@ -96,9 +96,8 @@ public class ItemBuilder {
     }
 
     public ItemBuilder clearLore(String c) {
-        if (item.lore().contains(ForceFormatCode.replaceFormat(c))) { // TextComponent
-            item.lore().remove(ForceFormatCode.replaceFormat(c));
-        }
+        // TextComponent
+        item.lore().remove(ForceFormatCode.replaceFormat(c));
         return this;
     }
 

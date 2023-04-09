@@ -1,48 +1,37 @@
-package catmoe.fallencrystal.akanelimbo.serverlist;
+package catmoe.fallencrystal.akanelimbo.serverlist
 
-import java.util.List;
-import java.util.Map;
+import catmoe.fallencrystal.akanelimbo.StringManager
+import catmoe.fallencrystal.akanelimbo.command.SubCommand
+import net.md_5.bungee.api.CommandSender
+import net.md_5.bungee.api.connection.ProxiedPlayer
 
-import catmoe.fallencrystal.akanelimbo.command.SubCommand;
-import net.md_5.bungee.api.CommandSender;
-import net.md_5.bungee.api.connection.ProxiedPlayer;
-
-public class ServerListCommand implements SubCommand {
-
-    @Override
-    public String getSubCommandId() {
-        return "serverlist";
+class ServerListCommand : SubCommand {
+    override fun getSubCommandId(): String {
+        return "serverlist"
     }
 
-    @Override
-    public void execute(CommandSender sender, String[] args) {
-        ServerListMenu menu = new ServerListMenu();
-        menu.open((ProxiedPlayer) sender);
+    override fun execute(sender: CommandSender, args: Array<String>) {
+        val menu = ServerListMenu()
+        menu.open((sender as ProxiedPlayer))
     }
 
-    @Override
-    public String getPermission() {
-        return "bungeecord.command.server";
+    override fun getPermission(): String {
+        return StringManager.getServerListPermission()
     }
 
-    @Override
-    public Map<Integer, List<String>> getTabCompleter() {
-        return null;
+    override fun getTabCompleter(): Map<Int, List<String>>? {
+        return null
     }
 
-    @Override
-    public boolean allowedConsole() {
-        return false;
+    override fun allowedConsole(): Boolean {
+        return false
     }
 
-    @Override
-    public boolean StrictSizeLimit() {
-        return true;
+    override fun strictSizeLimit(): Boolean {
+        return true
     }
 
-    @Override
-    public int StrictSize() {
-        return 1;
+    override fun strictSize(): Int {
+        return 1
     }
-
 }
