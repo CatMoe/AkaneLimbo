@@ -8,34 +8,37 @@ class SaveReadUtil {
     private val playerData: HashMap<UUID, Boolean> = HashMap()
 
     init {
+        createFile()
         loadData()
     }
 
     private fun createFile() {
-        val f = File("readed.txt")
+        val f = File(file)
         if (!f.exists()) {
             try {
                 f.createNewFile()
             } catch (e: IOException) {
-                e.printStackTrace()
+                throw IOException()
             }
         }
     }
 
     fun loadData() {
-        createFile()
         try {
             val reader = BufferedReader(FileReader(file))
-            var line: String
-            while (reader.readLine().also { line = it } != null) {
-                val parts = line.split(".".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+            var line: String? = reader.readLine()
+            while (line != null) {
+                val parts = line.split(",".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
                 val uuid = UUID.fromString(parts[0])
                 val read = java.lang.Boolean.parseBoolean(parts[1])
                 playerData[uuid] = read
+                line = reader.readLine()
             }
             reader.close()
         } catch (e: IOException) {
-            e.printStackTrace()
+            throw IOException()
+        } catch (e: NullPointerException) {
+            throw NullPointerException("File is null")
         }
     }
 
@@ -46,7 +49,7 @@ class SaveReadUtil {
             writer.write(p.uniqueId.toString() + "," + read + "\n")
             writer.close()
         } catch (e: IOException) {
-            e.printStackTrace()
+            throw IOException()
         }
     }
 
@@ -55,6 +58,6 @@ class SaveReadUtil {
     }
 
     companion object {
-        private const val file = "readed.txt"
+        private const val file = "G:/readed.txt"
     }
 }

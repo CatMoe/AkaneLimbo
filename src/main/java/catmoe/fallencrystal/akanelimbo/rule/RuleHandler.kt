@@ -16,24 +16,26 @@ class RuleHandler : Listener {
         val p = e.player
         val target = p.server.info
         try {
+            if (e.from == null && target == mainLimbo) {
+                trigger(p)
+            }
             // 从其它服务器跳转
             if (e.from == loginLimbo && target == mainLimbo) {
                 trigger(p)
             }
-            // 使用try方法捕获null 表明玩家直接连接到该服务器
-        } catch (ex: NullPointerException) {
-            // 如果目标是已经登录的服务器
-            if (target == mainLimbo) {
-                trigger(p) // 触发
-            }
+        } catch (_: NullPointerException) {
         }
     }
 
     private fun trigger(p: ProxiedPlayer) {
-        if (checkIsRead(p)) { skip(p)
-            return }
-        if (checkPermission(p)) { skip(p)
-            return }
+        if (checkIsRead(p)) {
+            skip(p)
+            return
+        }
+        if (checkPermission(p)) {
+            skip(p)
+            return
+        }
         val timer = Timer()
         timer.schedule(object : TimerTask() {
             override fun run() {
@@ -41,7 +43,11 @@ class RuleHandler : Listener {
                     val menu = RuleMenu()
                     menu.closed = false
                     menu.open(p)
-                } catch (ignore: NullPointerException) {}}}, 1500)
+                } catch (_: NullPointerException) {
+                } catch (e: Exception) {
+                    skip(p)
+                }
+            }}, 1500)
     }
 
     private fun checkPermission(p: ProxiedPlayer): Boolean {

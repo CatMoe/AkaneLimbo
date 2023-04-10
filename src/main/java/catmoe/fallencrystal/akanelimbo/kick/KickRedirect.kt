@@ -71,20 +71,20 @@ class KickRedirect : Listener {
 
     @EventHandler
     fun notInLimbo(e: ServerSwitchEvent) {
+        if (e.player.server.info.name.isNullOrEmpty()) return
         if (e.player.server.info.name.contains(StringManager.getLimboPrefix())) return
-        try {
-            val timer = Timer()
-            timer.schedule(object : TimerTask() {
-                override fun run() {
+        val timer = Timer()
+        timer.schedule(object : TimerTask() {
+            override fun run() {
+                try {
                     if (!e.player.server.info.name.contains(StringManager.getLimboPrefix())) {
                         menu.close = false
                         menu.close()
                         titlerun.set(false)
                     }
-                }
-            }, 300)
-        } catch (ignore: NullPointerException) {
-        }
+                } catch (ignore: NullPointerException) {}
+            }
+        }, 300)
     }
 
     private fun sendTitle(p: ProxiedPlayer?) {
