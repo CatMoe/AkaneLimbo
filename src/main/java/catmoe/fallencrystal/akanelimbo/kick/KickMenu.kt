@@ -24,10 +24,10 @@ class KickMenu : GUIBuilder() {
         define(player)
     }
 
-    override fun open(p: ProxiedPlayer) {
+    override fun open(player: ProxiedPlayer) {
         clear()
-        define(p)
-        super.open(p)
+        define(player)
+        super.open(player)
     }
 
     private fun placeholderItem() {
@@ -40,7 +40,7 @@ class KickMenu : GUIBuilder() {
         }
     }
 
-    override fun define(p: ProxiedPlayer) {
+    override fun define(p: ProxiedPlayer?) {
         super.define(p)
         placeholderItem()
         this.type(InventoryType.GENERIC_9X3)
@@ -74,21 +74,21 @@ class KickMenu : GUIBuilder() {
         )
     }
 
-    override fun onClick(e: InventoryClick) {
-        if (e.slot() == 11 && e.clickedItem().itemType() == ItemType.REPEATER) {
+    override fun onClick(click: InventoryClick?) {
+        if (click!!.slot() == 11 && click.clickedItem().itemType() == ItemType.REPEATER) {
             if (notOnline(kickfrom)) {
                 actionbar(player, "&c目标服务器似乎已离线 请稍后再试")
                 return
             }
-            player.connect(kickfrom)
+            player!!.connect(kickfrom)
             update()
             actionbar(player, "&a正在尝试重新连接 请稍后..")
-        } else if (e.slot() == 15 && e.clickedItem().itemType() == ItemType.BEACON) {
+        } else if (click.slot() == 15 && click.clickedItem().itemType() == ItemType.BEACON) {
             if (notOnline(defaultserver)) {
                 actionbar(player, "&c目标服务器似乎已离线 请稍后再试")
                 return
             }
-            player.connect(defaultserver)
+            player!!.connect(defaultserver)
             update()
             actionbar(player, "&a正在将您传送到大厅..")
         } else {
@@ -96,10 +96,10 @@ class KickMenu : GUIBuilder() {
         }
     }
 
-    override fun onClose(e: InventoryClose) {
+    override fun onClose(close: InventoryClose?) {
         try {
-            if (!close) {
-                open(player)
+            if (!this.close) {
+                open(player!!)
                 actionbar(player, "&b别忘了这可是不存在的地方 关闭了就出不来了哦~")
             } else {
                 close()
@@ -110,7 +110,7 @@ class KickMenu : GUIBuilder() {
     }
 
     private fun ca(text: String?): String {
-        return ForceFormatCode.replaceFormat(text)
+        return ForceFormatCode.replaceFormat(text!!)
     }
 
     private fun notOnline(server: ServerInfo?): Boolean {

@@ -1,6 +1,8 @@
-package catmoe.fallencrystal.akanelimbo.util.menu;
+package catmoe.fallencrystal.akanelimbo.util.menu
 
-public enum GUIEnchantsList {
+import java.util.*
+
+enum class GUIEnchantsList {
     MENDING,
     UNBREAKING,
     CURSE_OF_VANISHING,
@@ -40,12 +42,11 @@ public enum GUIEnchantsList {
     LURE,
     SILK_TOUCH;
 
-    public String getString() {
-        return "minecraft:" + this.toString().toLowerCase();
-    }
+    val string: String
+        get() = "minecraft:" + this.toString().lowercase(Locale.getDefault())
 
-    public String display() {
-        String s = this.toString().toLowerCase().replace("_", " ");
-        return s.toLowerCase();
+    fun display(): String {
+        val s = this.toString().lowercase(Locale.getDefault()).replace("_", " ")
+        return s.lowercase(Locale.getDefault())
     }
 }

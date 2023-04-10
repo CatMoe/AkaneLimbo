@@ -71,12 +71,12 @@ class KickRedirect : Listener {
 
     @EventHandler
     fun notInLimbo(e: ServerSwitchEvent) {
-        if (e.player.server.info.name.contains("AkaneLimbo")) return
+        if (e.player.server.info.name.contains(StringManager.getLimboPrefix())) return
         try {
             val timer = Timer()
             timer.schedule(object : TimerTask() {
                 override fun run() {
-                    if (!e.player.server.info.name.contains("AkaneLimbo")) {
+                    if (!e.player.server.info.name.contains(StringManager.getLimboPrefix())) {
                         menu.close = false
                         menu.close()
                         titlerun.set(false)

@@ -9,8 +9,8 @@ import net.md_5.bungee.event.EventHandler
 import java.util.*
 
 class RuleHandler : Listener {
-    private var loginLimbo = StringManager.getLoginLimbo()!!
-    private var mainLimbo = StringManager.getMainLimbo()!!
+    private var loginLimbo = StringManager.getLoginLimbo()
+    private var mainLimbo = StringManager.getMainLimbo()
     @EventHandler
     fun serverSwitchHandler(e: ServerSwitchEvent) {
         val p = e.player
@@ -30,25 +30,18 @@ class RuleHandler : Listener {
     }
 
     private fun trigger(p: ProxiedPlayer) {
-        if (checkIsRead(p)) {
-            skip(p)
-            return
-        }
-        if (checkPermission(p)) {
-            skip(p)
-            return
-        }
+        if (checkIsRead(p)) { skip(p)
+            return }
+        if (checkPermission(p)) { skip(p)
+            return }
         val timer = Timer()
         timer.schedule(object : TimerTask() {
             override fun run() {
                 try {
                     val menu = RuleMenu()
-                    menu.close = false
+                    menu.closed = false
                     menu.open(p)
-                } catch (ignore: NullPointerException) {
-                }
-            }
-        }, 1500)
+                } catch (ignore: NullPointerException) {}}}, 1500)
     }
 
     private fun checkPermission(p: ProxiedPlayer): Boolean {

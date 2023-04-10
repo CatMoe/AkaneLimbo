@@ -9,13 +9,16 @@ import net.md_5.bungee.api.ProxyServer
 import net.md_5.bungee.api.connection.ProxiedPlayer
 
 class SendLimbo : SubCommand {
-    override fun execute(sender: CommandSender, args: Array<String>) {
+    override val subCommandId: String
+        get() = "sendlimbo"
+
+    override fun execute(sender: CommandSender?, args: Array<String>) {
         // 创建一个LimboCreater
         val limbo = LimboCreater()
         // 将自己发送到Limbo
         if (args[1].equals("me", ignoreCase = true)) {
             if (sender !is ProxiedPlayer) {
-                prefixsender(sender, "&cConsole is a invalid target.")
+                prefixsender(sender!!, "&cConsole is a invalid target.")
                 return
             }
             limbo.createServer(sender, StringManager.getCommandLimbo())
@@ -38,15 +41,14 @@ class SendLimbo : SubCommand {
         }
     }
 
-    override fun getSubCommandId(): String {
-        return "sendlimbo"
-    }
+    override val permission: String
+        get() = StringManager.getSendLimboPermission()
 
-    override fun getPermission(): String {
-        return StringManager.getSendLimboPermission()
-    }
+    override val tabCompleter: MutableMap<Int, List<String>>
 
-    override fun getTabCompleter(): Map<Int, List<String>> {
+        get() = getTabCompleterMap()
+
+    private fun getTabCompleterMap(): MutableMap<Int, List<String>> {
         val map: MutableMap<Int, List<String>> = HashMap()
         val tip1 = ArrayList<String>()
         for (p in ProxyServer.getInstance().players) {

@@ -6,32 +6,25 @@ import net.md_5.bungee.api.CommandSender
 import net.md_5.bungee.api.connection.ProxiedPlayer
 
 class ServerListCommand : SubCommand {
-    override fun getSubCommandId(): String {
-        return "serverlist"
-    }
 
-    override fun execute(sender: CommandSender, args: Array<String>) {
+    override val subCommandId: String get() = "serverlist"
+
+    override fun execute(sender: CommandSender?, args: Array<String>) {
         val menu = ServerListMenu()
         menu.open((sender as ProxiedPlayer))
     }
 
-    override fun getPermission(): String {
-        return StringManager.getServerListPermission()
+    private fun getTabCompleterMap(): MutableMap<Int, List<String>> {
+        val map : MutableMap<Int, List<String>> = HashMap()
+        val tip1 = ArrayList<String>()
+        tip1.add("?")
+        map[1] = tip1
+        return map
     }
 
-    override fun getTabCompleter(): Map<Int, List<String>>? {
-        return null
-    }
-
-    override fun allowedConsole(): Boolean {
-        return false
-    }
-
-    override fun strictSizeLimit(): Boolean {
-        return true
-    }
-
-    override fun strictSize(): Int {
-        return 1
-    }
+    override val permission: String get() = StringManager.getServerListPermission()
+    override val tabCompleter: MutableMap<Int, List<String>> get() = getTabCompleterMap()
+    override fun allowedConsole(): Boolean { return false }
+    override fun strictSizeLimit(): Boolean { return true }
+    override fun strictSize(): Int { return 1 }
 }

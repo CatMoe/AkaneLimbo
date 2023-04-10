@@ -1,22 +1,13 @@
-package catmoe.fallencrystal.akanelimbo.command;
+package catmoe.fallencrystal.akanelimbo.command
 
-import java.util.List;
-import java.util.Map;
+import net.md_5.bungee.api.CommandSender
 
-import net.md_5.bungee.api.CommandSender;
-
-public interface SubCommand {
-    String getSubCommandId();
-
-    void execute(CommandSender sender, String[] args);
-
-    String getPermission();
-
-    Map<Integer, List<String>> getTabCompleter();
-
-    boolean allowedConsole();
-
-    boolean strictSizeLimit();
-
-    int strictSize();
+interface SubCommand {
+    val subCommandId: String?
+    fun execute(sender: CommandSender?, args: Array<String>)
+    val permission: String?
+    val tabCompleter: MutableMap<Int, List<String>>?
+    fun allowedConsole(): Boolean
+    fun strictSizeLimit(): Boolean
+    fun strictSize(): Int
 }

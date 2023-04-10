@@ -24,17 +24,17 @@ class RuleMenu : GUIBuilder() {
     private var ruleGeneralItemSlot = 12
     private var rulePrivacyItemSlot = 14
     private var ruleNotReadedItemSlot = 16
-    var close = false
+    var closed = false
     private var empty = ""
     private var ruleAccept = "&a点击接受此条例!"
     private var ruleDeny = "&c不想同意? 再次点击来取消操作."
-    override fun open(p: ProxiedPlayer) {
+    override fun open(player: ProxiedPlayer) {
         clear()
-        define(p)
-        super.open(p)
+        define(player)
+        super.open(player)
     }
 
-    override fun define(p: ProxiedPlayer) {
+    override fun define(p: ProxiedPlayer?) {
         super.define(p)
         this.type(InventoryType.GENERIC_9X5)
         setTitle(ca("&b用户协议签署 &7[最后更新 23-02-07]"))
@@ -332,39 +332,39 @@ class RuleMenu : GUIBuilder() {
         }
     }
 
-    override fun onClick(e: InventoryClick) {
-        if (e.slot() == agreeItemItemSlot && ruleNotReaded && e.clickedItem().itemType() == ItemType.EMERALD_BLOCK) {
-            disconnect(player, "&c你真的认真阅读并同意用户协议了吗?")
-        } else if (e.slot() == agreeItemItemSlot && e.clickedItem()
+    override fun onClick(click: InventoryClick?) {
+        if (click!!.slot() == agreeItemItemSlot && ruleNotReaded && click.clickedItem().itemType() == ItemType.EMERALD_BLOCK) {
+            disconnect(player!!, "&c你真的认真阅读并同意用户协议了吗?")
+        } else if (click.slot() == agreeItemItemSlot && click.clickedItem()
                 .itemType() == ItemType.BEACON && ruleGeneral && rulePrivacy && ruleFinal && !ruleNotReaded
         ) {
-            player.connect(ProxyServer.getInstance().getServerInfo("Lobby-1"))
-            close = true
-            setIsRead(player)
-        } else if (e.slot() == agreeItemItemSlot && e.clickedItem().itemType() == ItemType.REDSTONE_BLOCK) {
-            disconnect(player, "&c下次再见!")
-        } else if (e.slot() == ruleFinalItemSlot && e.clickedItem().itemType() == ItemType.PAPER) {
+            player!!.connect(ProxyServer.getInstance().getServerInfo("Lobby-1"))
+            closed = true
+            setIsRead(player!!)
+        } else if (click.slot() == agreeItemItemSlot && click.clickedItem().itemType() == ItemType.REDSTONE_BLOCK) {
+            disconnect(player!!, "&c下次再见!")
+        } else if (click.slot() == ruleFinalItemSlot && click.clickedItem().itemType() == ItemType.PAPER) {
             ruleFinal = !ruleFinal
-            open(player)
-        } else if (e.slot() == ruleGeneralItemSlot && e.clickedItem().itemType() == ItemType.PAPER) {
+            open(player!!)
+        } else if (click.slot() == ruleGeneralItemSlot && click.clickedItem().itemType() == ItemType.PAPER) {
             ruleGeneral = !ruleGeneral
-            open(player)
-        } else if (e.slot() == rulePrivacyItemSlot && e.clickedItem().itemType() == ItemType.PAPER) {
+            open(player!!)
+        } else if (click.slot() == rulePrivacyItemSlot && click.clickedItem().itemType() == ItemType.PAPER) {
             rulePrivacy = !rulePrivacy
-            open(player)
-        } else if (e.slot() == ruleNotReadedItemSlot && e.clickedItem().itemType() == ItemType.PAPER) {
+            open(player!!)
+        } else if (click.slot() == ruleNotReadedItemSlot && click.clickedItem().itemType() == ItemType.PAPER) {
             if (!ruleNotReaded) {
                 ruleNotReaded = true
             } else {
                 ruleNotReadedItem = !ruleNotReadedItem
             }
-            open(player)
-        } else if (e.slot() == agreeItemItemSlot && e.clickedItem()
+            open(player!!)
+        } else if (click.slot() == agreeItemItemSlot && click.clickedItem()
                 .itemType() == ItemType.BEACON && !(ruleGeneral && rulePrivacy && ruleFinal && !ruleNotReaded)
         ) {
-            disconnect(player, "&c下次再见!")
+            disconnect(player!!, "&c下次再见!")
         } else {
-            open(player)
+            open(player!!)
         }
     }
 
@@ -378,25 +378,25 @@ class RuleMenu : GUIBuilder() {
         }
     }
 
-    override fun onClose(e: InventoryClose) {
+    override fun onClose(close: InventoryClose?) {
         try {
-            if (!close) {
-                open(player)
+            if (!this.closed) {
+                open(player!!)
             } else {
                 close()
             }
             // 用法详见KickMenu
         } catch (ex: NullPointerException) {
-            close = true
+            this.closed = true
         }
     }
 
     private fun ca(text: String?): String {
-        return ForceFormatCode.replaceFormat(text)
+        return ForceFormatCode.replaceFormat(text!!)
     }
 
     private fun disconnect(p: ProxiedPlayer, reason: String?) {
-        close = true
+        closed = true
         close()
         p.disconnect(TextComponent(ca(reason)))
     }

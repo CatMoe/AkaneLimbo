@@ -1,139 +1,111 @@
-package catmoe.fallencrystal.akanelimbo.util.menu;
+package catmoe.fallencrystal.akanelimbo.util.menu
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import dev.simplix.protocolize.api.Protocolize
+import dev.simplix.protocolize.api.inventory.Inventory
+import dev.simplix.protocolize.api.inventory.InventoryClick
+import dev.simplix.protocolize.api.inventory.InventoryClose
+import dev.simplix.protocolize.api.item.ItemStack
+import dev.simplix.protocolize.data.ItemType
+import dev.simplix.protocolize.data.inventory.InventoryType
+import net.md_5.bungee.api.connection.ProxiedPlayer
 
-import dev.simplix.protocolize.api.Protocolize;
-import dev.simplix.protocolize.api.inventory.Inventory;
-import dev.simplix.protocolize.api.inventory.InventoryClick;
-import dev.simplix.protocolize.api.inventory.InventoryClose;
-import dev.simplix.protocolize.api.inventory.PlayerInventory;
-import dev.simplix.protocolize.api.item.ItemStack;
-import dev.simplix.protocolize.api.player.ProtocolizePlayer;
-import dev.simplix.protocolize.data.ItemType;
-import dev.simplix.protocolize.data.inventory.InventoryType;
-
-import net.md_5.bungee.api.connection.ProxiedPlayer;
-
-public abstract class GUIBuilder {
-    private InventoryType type;
-    private ProxiedPlayer player;
-    private HashMap<Integer, ItemStack> items = new HashMap<>();
-    private List<ItemStack> emptyItems = new ArrayList<>();
-    private String title;
-
-    public void type(InventoryType type) {
-        this.type = type;
+abstract class GUIBuilder {
+    private var type: InventoryType? = null
+    var player: ProxiedPlayer? = null
+    private val items = HashMap<Int, ItemStack>()
+    private val emptyItems: MutableList<ItemStack> = ArrayList()
+    private var title: String? = null
+    fun type(type: InventoryType?) {
+        this.type = type
     }
 
-    public InventoryType type() {
-        return this.type;
+    fun type(): InventoryType? {
+        return type
     }
 
-    public void define(ProxiedPlayer p) {
-        this.player = p;
+    open fun define(p: ProxiedPlayer?) {
+        player = p
     }
 
-    public void setTitle(String string) {
-        this.title = string;
+    fun setTitle(string: String?) {
+        title = string
     }
 
-    public Inventory build() {
-        Inventory inv = new Inventory(type);
-        inv.title(title);
-        if (!emptyItems.isEmpty()) {
-            inv.items();
+    private fun build(): Inventory {
+        val inv = Inventory(type)
+        inv.title(title)
+        if (emptyItems.isNotEmpty()) {
+            inv.items()
         }
-        for (Integer index : items.keySet()) {
-            ItemStack item = items.get(index);
-            inv.item(index, item);
+        for (index in items.keys) {
+            val item = items[index]
+            inv.item(index, item)
         }
-        return inv;
+        return inv
     }
 
-    public void open(ProxiedPlayer player) {
-        Inventory i = build();
-        i.onClick(this::onClick);
-        i.onClose(this::onClose);
-        ProtocolizePlayer Protocolplayer = Protocolize.playerProvider().player(player.getUniqueId());
-        Protocolplayer.openInventory(i);
+    open fun open(player: ProxiedPlayer) {
+        val i = build()
+        i.onClick { click: InventoryClick? -> onClick(click) }
+        i.onClose { close: InventoryClose? -> onClose(close) }
+        val Protocolplayer = Protocolize.playerProvider().player(player.uniqueId)
+        Protocolplayer.openInventory(i)
     }
 
-    public void updateItems() {
-        ProtocolizePlayer protocolizePlayer = Protocolize.playerProvider().player(player.getUniqueId());
-        PlayerInventory inv = protocolizePlayer.proxyInventory();
-        inv.clear();
-        for (Integer index : items.keySet()) {
-            ItemStack item = items.get(index);
-            inv.item(index, item);
+    fun updateItems() {
+        val protocolizePlayer = Protocolize.playerProvider().player(player!!.uniqueId)
+        val inv = protocolizePlayer.proxyInventory()
+        inv.clear()
+        for (index in items.keys) {
+            val item = items[index]
+            inv.item(index, item)
         }
-        inv.update();
+        inv.update()
     }
 
-    public InventoryType getInventoryType(int value) {
-        switch (value) {
-            case 0:
-                return InventoryType.GENERIC_3X3;
-            case 1:
-                return InventoryType.GENERIC_9X1;
-            case 2:
-                return InventoryType.GENERIC_9X2;
-            case 3:
-                return InventoryType.GENERIC_9X3;
-            case 4:
-                return InventoryType.GENERIC_9X4;
-            case 5:
-                return InventoryType.GENERIC_9X5;
-            case 6:
-                return InventoryType.GENERIC_9X6;
-            default:
-                return InventoryType.GENERIC_9X3;
+    fun getInventoryType(value: Int): InventoryType {
+        return when (value) {
+            0 -> InventoryType.GENERIC_3X3
+            1 -> InventoryType.GENERIC_9X1
+            2 -> InventoryType.GENERIC_9X2
+            3 -> InventoryType.GENERIC_9X3
+            4 -> InventoryType.GENERIC_9X4
+            5 -> InventoryType.GENERIC_9X5
+            6 -> InventoryType.GENERIC_9X6
+            else -> InventoryType.GENERIC_9X3
         }
     }
 
-    public ItemStack getSlot(int slot) {
-        return items.get(slot);
+    fun getSlot(slot: Int): ItemStack? {
+        return items[slot]
     }
 
-    public void onClose(InventoryClose close) {
+    open fun onClose(close: InventoryClose?) {}
+    open fun onClick(click: InventoryClick?) {}
+    fun close() {
+        val protocolizePlayer = Protocolize.playerProvider().player(player!!.uniqueId)
+        protocolizePlayer.closeInventory()
     }
 
-    public void onClick(InventoryClick click) {
-    }
-
-    public void close() {
-        ProtocolizePlayer protocolizePlayer = Protocolize.playerProvider().player(player.getUniqueId());
-        protocolizePlayer.closeInventory();
-    }
-
-    protected void setEmpty(ItemType itemtype) {
-        ItemStack item = new ItemBuilder(itemtype).amount(1).name("").build();
-        int totalSlots = type.getTypicalSize(player.getPendingConnection().getVersion());
-        for (int i = 0; i < totalSlots; i++) {
-            emptyItems.add(item);
+    protected fun setEmpty(itemtype: ItemType?) {
+        val item = ItemBuilder(itemtype).amount(1).name("").build()
+        val totalSlots = type!!.getTypicalSize(player!!.pendingConnection.version)
+        for (i in 0 until totalSlots) {
+            emptyItems.add(item)
         }
     }
 
-    protected void setItem(int index, ItemStack itemBuilder) {
+    protected fun setItem(index: Int, itemBuilder: ItemStack?) {
         if (itemBuilder != null) {
-            items.put(index, itemBuilder);
+            items[index] = itemBuilder
         }
     }
 
-    protected void removeItem(int index) {
-        items.remove(index);
+    protected fun removeItem(index: Int) {
+        items.remove(index)
     }
 
-    public ProxiedPlayer getPlayer() {
-        return player;
-    }
-
-    public void setPlayer(ProxiedPlayer player) {
-        this.player = player;
-    }
-
-    public void clear() {
-        this.items.clear();
+    fun clear() {
+        items.clear()
     }
 }

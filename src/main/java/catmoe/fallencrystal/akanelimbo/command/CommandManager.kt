@@ -40,13 +40,13 @@ class CommandManager(name: String?, permission: String?, vararg aliases: String?
         }
     }
 
-    override fun onTabComplete(sender: CommandSender, args: Array<String>): Iterable<String> {
+    override fun onTabComplete(sender: CommandSender, args: Array<String>): List<String?> {
         val subCommand = getSubCommandFromArgs(args[0])
         val map: MutableMap<Int, List<String>> = HashMap()
-        map[args.size - 1] = listOf("<Null>")
+        map[args.size - 1] = listOf("?")
         if (subCommand != null && args[0] == subCommand.subCommandId) {
-            return if (subCommand.tabCompleter != null && subCommand.tabCompleter[args.size - 1] != null) {
-                subCommand.tabCompleter[args.size - 1]!!
+            return if (subCommand.tabCompleter?.get(args.size - 1) != null) {
+                subCommand.tabCompleter!![args.size - 1]!!
             } else {
                 map[args.size - 1]!!
             }
@@ -67,6 +67,6 @@ class CommandManager(name: String?, permission: String?, vararg aliases: String?
 
     fun register(subCommand: SubCommand) {
         loadedCommands.add(subCommand)
-        tabComplete.add(subCommand.subCommandId)
+        tabComplete.add(subCommand.subCommandId!!)
     }
 }

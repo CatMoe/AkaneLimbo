@@ -28,7 +28,7 @@ class ServerListMenu : GUIBuilder() {
     private var proxy = ProxyServer.getInstance()
     private var servers: MutableMap<String, ServerInfo> = proxy.servers!!
     private var serverList: Collection<ServerInfo> = servers.values
-    override fun define(p: ProxiedPlayer) {
+    override fun define(p: ProxiedPlayer?) {
         super.define(p)
         this.type(InventoryType.GENERIC_9X6)
         setTitle(ca("&eServer List"))
@@ -74,17 +74,17 @@ class ServerListMenu : GUIBuilder() {
         }
     }
 
-    override fun onClick(e: InventoryClick) {
-        if (e.clickedItem().itemType() == null) {
+    override fun onClick(click: InventoryClick?) {
+        if (click!!.clickedItem().itemType() == null) {
             update()
         } else {
-            toServer(player, e.slot())
+            toServer(player!!, click.slot())
             update()
         }
     }
 
     private fun ca(text: String?): String {
-        return ForceFormatCode.replaceFormat(text)
+        return ForceFormatCode.replaceFormat(text!!)
     }
 
     private fun toServer(p: ProxiedPlayer, slot: Int) {

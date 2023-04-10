@@ -1,31 +1,34 @@
-package catmoe.fallencrystal.akanelimbo;
+package catmoe.fallencrystal.akanelimbo
 
-import net.md_5.bungee.api.ProxyServer;
-import net.md_5.bungee.api.config.ServerInfo;
+import net.md_5.bungee.api.ProxyServer
+import net.md_5.bungee.api.config.ServerInfo
 
-public class StringManager {
+object StringManager {
+    private var LoginLimbo = "LoginLimbo"
+    private var MainLimbo = "MainLimbo"
+    private var limboPrefix = "AkaneLimbo"
+    private var limboArrow = " -> "
+    private var kickRedirectLimbo = "KickRedirect"
+    private var commandLimbo = "CmdCreate"
+    private var forceReadPermission = "rule.read"
+    private var forceUnreadPermission = "rule.bypass"
+    private var serverListPermission = "bungeecord.command.server"
+    private var sendLimboPermission = "bungeecord.command.send"
 
-    static String LoginLimbo = "LoginLimbo";
-    static String MainLimbo = "MainLimbo";
-    static String LimboPrefix = "AkaneLimbo";
-    static String LimboArrow = " -> ";
-    static String KickRedirectLimbo = "KickRedirect";
-    static String CommandLimbo = "CmdCreate";
+    fun getLoginLimbo(): ServerInfo { return ProxyServer.getInstance().getServerInfo(LoginLimbo) }
+    fun getMainLimbo(): ServerInfo { return ProxyServer.getInstance().getServerInfo(MainLimbo) }
 
-    static String ForceReadPermission = "rule.read";
-    static String ForceUnreadPermission = "rule.bypass";
-    static String ServerListPermission = "bungeecord.command.server";
-    static String SendLimboPermission = "bungeecord.command.send";
+    fun getLimboPrefix(): String { return limboPrefix }
+    fun getLimboArrow(): String { return limboArrow }
 
-    public static ServerInfo getLoginLimbo() {return ProxyServer.getInstance().getServerInfo(LoginLimbo);}
-    public static ServerInfo getMainLimbo() {return ProxyServer.getInstance().getServerInfo(MainLimbo);}
-    public static String getForceReadPermission() {return ForceReadPermission;}
-    public static String getForceUnreadPermission() {return ForceUnreadPermission;}
-    public static String getServerListPermission() {return ServerListPermission;}
-    public static String getSendLimboPermission() {return SendLimboPermission;}
-    public static String getLimboPrefix() {return LimboPrefix;}
-    public static String getLimboArrow() {return LimboArrow;}
-    public static String getKickRedirectLimbo() {return KickRedirectLimbo;}
-    public static String getCommandLimbo() {return CommandLimbo;}
+    fun getKickRedirectLimbo(): String {return kickRedirectLimbo}
+    fun getCommandLimbo(): String {return commandLimbo}
+
+    fun getForceReadPermission(): String {return forceReadPermission}
+    fun getForceUnreadPermission(): String {return forceUnreadPermission}
+    fun getServerListPermission(): String {return serverListPermission}
+    fun getSendLimboPermission(): String {return sendLimboPermission}
+
+
 
 }

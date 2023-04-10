@@ -1,27 +1,8 @@
-package catmoe.fallencrystal.akanelimbo.util.menu;
+package catmoe.fallencrystal.akanelimbo.util.menu
 
-public class GUIEnchantUtil {
-    private GUIEnchantsList enchantment;
-    private int level;
+class GUIEnchantUtil @JvmOverloads constructor(@JvmField val enchantment: GUIEnchantsList, @JvmField val level: Int = 1) {
 
-    public GUIEnchantUtil(GUIEnchantsList enchantment) {
-        this(enchantment, 1);
-    }
-
-    public GUIEnchantUtil(GUIEnchantsList enchantment, int level) {
-        this.enchantment = enchantment;
-        this.level = level;
-    }
-
-    public GUIEnchantsList getEnchantment() {
-        return enchantment;
-    }
-
-    public int getLevel() {
-        return level;
-    }
-
-    public String toString() {
-        return "d: \"" + enchantment.getString() + "\", lvl: " + level + "s";
+    override fun toString(): String {
+        return "d: \"" + enchantment.string + "\", lvl: " + level + "s"
     }
 }
