@@ -65,7 +65,7 @@ class KickRedirect : Listener {
     } // String -> ServerInfo
 
     fun openMenu(e: ServerKickEvent) {
-        menu.handleevent(e)
+        menu.handleEvent(e)
         menu.open(e.player)
     }
 

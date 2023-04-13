@@ -1,6 +1,5 @@
 package catmoe.fallencrystal.akanelimbo.rule
 
-import catmoe.fallencrystal.akanelimbo.StringManager
 import catmoe.fallencrystal.akanelimbo.util.menu.ForceFormatCode
 import catmoe.fallencrystal.akanelimbo.util.menu.GUIBuilder
 import catmoe.fallencrystal.akanelimbo.util.menu.GUIEnchantsList
@@ -404,6 +403,6 @@ class RuleMenu : GUIBuilder() {
     private fun setIsRead(p: ProxiedPlayer) {
         val read = SaveReadUtil()
         read.loadData()
-        read.setData(p, !p.hasPermission(StringManager.getForceUnreadPermission()))
+        read.setData(p, true)
     }
 }

@@ -5,7 +5,7 @@ import java.io.*
 import java.util.*
 
 class SaveReadUtil {
-    private val playerData: HashMap<UUID, Boolean> = HashMap()
+    private val playerData: MutableMap<UUID, Boolean> = mutableMapOf()
 
     init {
         createFile()
@@ -44,20 +44,46 @@ class SaveReadUtil {
 
     fun setData(p: ProxiedPlayer, read: Boolean) {
         playerData[p.uniqueId] = read
+        val uuid = p.uniqueId
+        val current = getPlayerData(p)
+        if (current == read) return
+        if (current != null) {
+            deleteLine(uuid.toString())
+        }
         try {
             val writer = BufferedWriter(FileWriter(file, true))
-            writer.write(p.uniqueId.toString() + "," + read + "\n")
+            writer.write("$uuid,$read\n")
             writer.close()
-        } catch (e: IOException) {
-            throw IOException()
+        } catch (ignore: IOException) {
         }
     }
 
-    fun getPlayerData(p: ProxiedPlayer): Boolean {
-        return playerData.getOrDefault(p.uniqueId, false)
+    fun getPlayerData(p: ProxiedPlayer): Boolean? {
+        return playerData[p.uniqueId]
+    }
+
+    private fun deleteLine(lineToRemove: String) {
+        val tempFile = File("$file.temp")
+        val reader = BufferedReader(FileReader(file))
+        val writer = BufferedWriter(FileWriter(tempFile))
+        var currentLine: String?
+        while (reader.readLine().also { currentLine = it } != null) {
+            val trimmedLine = currentLine?.trim()
+            if (trimmedLine != lineToRemove) {
+                writer.write("$trimmedLine\n")
+            }
+        }
+        writer.close()
+        reader.close()
+        val deleted = File(file).delete()
+        val renamed = tempFile.renameTo(File(file))
+        if (!deleted || !renamed) {
+            throw IOException("Failed to delete or rename file")
+        }
     }
 
     companion object {
         private const val file = "G:/readed.txt"
     }
 }
+

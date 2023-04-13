@@ -11,7 +11,8 @@ class ServerListCommand : SubCommand {
 
     override fun execute(sender: CommandSender?, args: Array<String>) {
         val menu = ServerListMenu()
-        menu.open((sender as ProxiedPlayer))
+        menu.executePlayer = (sender as ProxiedPlayer)
+        menu.open(sender)
     }
 
     private fun getTabCompleterMap(): MutableMap<Int, List<String>> {

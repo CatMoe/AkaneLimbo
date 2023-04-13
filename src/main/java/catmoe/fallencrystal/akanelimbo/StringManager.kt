@@ -10,8 +10,6 @@ object StringManager {
     private var limboArrow = " -> "
     private var kickRedirectLimbo = "KickRedirect"
     private var commandLimbo = "CmdCreate"
-    private var forceReadPermission = "rule.read"
-    private var forceUnreadPermission = "rule.bypass"
     private var serverListPermission = "bungeecord.command.server"
     private var sendLimboPermission = "bungeecord.command.send"
 
@@ -24,8 +22,6 @@ object StringManager {
     fun getKickRedirectLimbo(): String {return kickRedirectLimbo}
     fun getCommandLimbo(): String {return commandLimbo}
 
-    fun getForceReadPermission(): String {return forceReadPermission}
-    fun getForceUnreadPermission(): String {return forceUnreadPermission}
     fun getServerListPermission(): String {return serverListPermission}
     fun getSendLimboPermission(): String {return sendLimboPermission}
 

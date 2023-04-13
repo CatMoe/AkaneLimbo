@@ -1,5 +1,6 @@
 package catmoe.fallencrystal.akanelimbo.serverlist
 
+import catmoe.fallencrystal.akanelimbo.StringManager
 import catmoe.fallencrystal.akanelimbo.util.ServerOnlineCheck.socketPing
 import catmoe.fallencrystal.akanelimbo.util.menu.ForceFormatCode
 import catmoe.fallencrystal.akanelimbo.util.menu.GUIBuilder
@@ -14,6 +15,9 @@ import net.md_5.bungee.api.connection.ProxiedPlayer
 import java.net.SocketAddress
 
 class ServerListMenu : GUIBuilder() {
+
+    var executePlayer: ProxiedPlayer? = null
+
     override fun open(player: ProxiedPlayer) {
         clear()
         define(player)
@@ -75,11 +79,15 @@ class ServerListMenu : GUIBuilder() {
     }
 
     override fun onClick(click: InventoryClick?) {
-        if (click!!.clickedItem().itemType() == null) {
-            update()
+        if (player!!.hasPermission(StringManager.getServerListPermission())) {
+            if (click!!.clickedItem().itemType() == null) {
+                update()
+            } else {
+                toServer(player!!, click.slot())
+                update()
+            }
         } else {
-            toServer(player!!, click.slot())
-            update()
+            close()
         }
     }
 

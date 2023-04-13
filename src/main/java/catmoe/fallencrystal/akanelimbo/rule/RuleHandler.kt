@@ -18,6 +18,7 @@ class RuleHandler : Listener {
         try {
             if (e.from == null && target == mainLimbo) {
                 trigger(p)
+                return
             }
             // 从其它服务器跳转
             if (e.from == loginLimbo && target == mainLimbo) {
@@ -28,11 +29,7 @@ class RuleHandler : Listener {
     }
 
     private fun trigger(p: ProxiedPlayer) {
-        if (checkIsRead(p)) {
-            skip(p)
-            return
-        }
-        if (checkPermission(p)) {
+        if (checkIsRead(p)!!) {
             skip(p)
             return
         }
@@ -50,13 +47,7 @@ class RuleHandler : Listener {
             }}, 1500)
     }
 
-    private fun checkPermission(p: ProxiedPlayer): Boolean {
-        return if (p.hasPermission(StringManager.getForceUnreadPermission())) {
-            false
-        } else p.hasPermission(StringManager.getForceReadPermission())
-    }
-
-    private fun checkIsRead(p: ProxiedPlayer?): Boolean {
+    private fun checkIsRead(p: ProxiedPlayer?): Boolean? {
         val file = SaveReadUtil()
         file.loadData()
         return file.getPlayerData(p!!)

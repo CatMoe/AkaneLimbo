@@ -17,6 +17,7 @@ import net.md_5.bungee.api.event.ServerKickEvent
 class KickMenu : GUIBuilder() {
     private var defaultserver: ServerInfo? = null
     private var kickfrom: ServerInfo? = null
+    private var handlePlayer: ProxiedPlayer? = null
     @JvmField
     var close = false
     private fun update() {
@@ -98,6 +99,7 @@ class KickMenu : GUIBuilder() {
 
     override fun onClose(close: InventoryClose?) {
         try {
+            if (!(player!!.name.equals(handlePlayer!!.name))) return
             if (!this.close) {
                 open(player!!)
                 actionbar(player, "&b别忘了这可是不存在的地方 关闭了就出不来了哦~")
@@ -118,10 +120,9 @@ class KickMenu : GUIBuilder() {
     }
 
     @Suppress("DEPRECATION")
-    fun handleevent(e: ServerKickEvent) {
+    fun handleEvent(e: ServerKickEvent) {
         kickfrom = e.kickedFrom
-        defaultserver = ProxyServer.getInstance().getServerInfo(
-            ProxyServer.getInstance().config.listeners.iterator().next().defaultServer
-        )
+        defaultserver = ProxyServer.getInstance().getServerInfo(ProxyServer.getInstance().config.listeners.iterator().next().defaultServer)
+        handlePlayer = e.player
     }
 }
