@@ -2,6 +2,7 @@
 
 package catmoe.fallencrystal.akanelimbo.kick
 
+import catmoe.fallencrystal.akanelimbo.util.MessageUtil
 import catmoe.fallencrystal.akanelimbo.util.MessageUtil.actionbar
 import catmoe.fallencrystal.akanelimbo.util.ServerOnlineCheck.socketPing
 import catmoe.fallencrystal.akanelimbo.util.menu.ForceFormatCode
@@ -16,6 +17,8 @@ import net.md_5.bungee.api.chat.TextComponent
 import net.md_5.bungee.api.config.ServerInfo
 import net.md_5.bungee.api.connection.ProxiedPlayer
 import net.md_5.bungee.api.event.ServerKickEvent
+import java.util.concurrent.Executors
+import java.util.concurrent.TimeUnit
 
 class KickMenu : GUIBuilder() {
     private var defaultserver: ServerInfo? = null
@@ -133,5 +136,19 @@ class KickMenu : GUIBuilder() {
         kickfrom = e.kickedFrom
         defaultserver = ProxyServer.getInstance().getServerInfo(ProxyServer.getInstance().config.listeners.iterator().next().defaultServer)
         handlePlayer = e.player
+    }
+
+    fun sendTitle(p: ProxiedPlayer?) {
+        val title = "&c连接已丢失"
+        val subtitle = "&f在菜单内选择 &b回到大厅 &f或 &b重新连接&f"
+        MessageUtil.fulltitle(p!!, title, subtitle, 18, 5, 0)
+        val scheduledExecutorService = Executors.newSingleThreadScheduledExecutor()
+        // 创建循环
+        scheduledExecutorService.scheduleAtFixedRate({
+            if (!p.server.info.name.contains("AkaneLimbo")) {
+                MessageUtil.fulltitle(p, "", "", 1, 0, 0)
+                scheduledExecutorService.shutdownNow()
+            } else { MessageUtil.fulltitle(p, title, subtitle, 21, 0, 0) }
+        }, 1, 1, TimeUnit.SECONDS)
     }
 }

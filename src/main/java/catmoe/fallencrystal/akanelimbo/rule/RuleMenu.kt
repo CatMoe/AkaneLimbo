@@ -27,6 +27,7 @@ class RuleMenu : GUIBuilder() {
     private var empty = ""
     private var ruleAccept = "&a点击接受此条例!"
     private var ruleDeny = "&c不想同意? 再次点击来取消操作."
+
     override fun open(player: ProxiedPlayer) {
         clear()
         define(player)
