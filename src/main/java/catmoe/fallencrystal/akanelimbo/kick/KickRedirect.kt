@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package catmoe.fallencrystal.akanelimbo.kick
 
 import catmoe.fallencrystal.akanelimbo.StringManager
@@ -7,7 +9,6 @@ import net.md_5.bungee.api.ProxyServer
 import net.md_5.bungee.api.config.ServerInfo
 import net.md_5.bungee.api.connection.ProxiedPlayer
 import net.md_5.bungee.api.event.ServerKickEvent
-import net.md_5.bungee.api.event.ServerSwitchEvent
 import net.md_5.bungee.api.plugin.Listener
 import net.md_5.bungee.event.EventHandler
 import java.util.*
@@ -16,7 +17,6 @@ import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicBoolean
 
 class KickRedirect : Listener {
-    var menu = KickMenu()
 
     /*
      * Banned - Ban Reason
@@ -25,13 +25,14 @@ class KickRedirect : Listener {
      * Violations - Ban Reason
      * Null - ReadTimedOut : null
      */
-    private var dontRedirectReason: List<String> = mutableListOf("Banned", "Cheating", "[Proxy]", "Violations", "Null")
+    private var dontRedirectReason: List<String> = mutableListOf("Banned", "Cheating", "Proxy", "Violations", "Null")
     private var dontRedirectServer: List<String> = mutableListOf("LoginLimbo", "MainLimbo")
     private var limbo = LimboCreater()
     private val titlerun = AtomicBoolean(true)
     @EventHandler
     fun kicked(e: ServerKickEvent) {
         var shouldRedirect = true
+        if (e.kickReason.isNullOrEmpty()) return
         try {
             for (reason in dontRedirectReason) {
                 if (Arrays.toString(e.kickReasonComponent).contains(reason)) {
@@ -65,26 +66,9 @@ class KickRedirect : Listener {
     } // String -> ServerInfo
 
     fun openMenu(e: ServerKickEvent) {
+        val menu = KickMenu()
         menu.handleEvent(e)
         menu.open(e.player)
-    }
-
-    @EventHandler
-    fun notInLimbo(e: ServerSwitchEvent) {
-        if (e.player.server.info.name.isNullOrEmpty()) return
-        if (e.player.server.info.name.contains(StringManager.getLimboPrefix())) return
-        val timer = Timer()
-        timer.schedule(object : TimerTask() {
-            override fun run() {
-                try {
-                    if (!e.player.server.info.name.contains(StringManager.getLimboPrefix())) {
-                        menu.close = false
-                        menu.close()
-                        titlerun.set(false)
-                    }
-                } catch (ignore: NullPointerException) {}
-            }
-        }, 300)
     }
 
     private fun sendTitle(p: ProxiedPlayer?) {

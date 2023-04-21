@@ -1,7 +1,6 @@
 package catmoe.fallencrystal.akanelimbo.rule
 
 import catmoe.fallencrystal.akanelimbo.StringManager
-import net.md_5.bungee.api.ProxyServer
 import net.md_5.bungee.api.connection.ProxiedPlayer
 import net.md_5.bungee.api.event.ServerSwitchEvent
 import net.md_5.bungee.api.plugin.Listener
@@ -16,19 +15,14 @@ class RuleHandler : Listener {
         val p = e.player
         val target = p.server.info
         try {
-            if (e.from == null && target == mainLimbo) {
-                trigger(p)
-                return
-            }
+            if (e.from == null && target == mainLimbo) { trigger(p); return }
             // 从其它服务器跳转
-            if (e.from == loginLimbo && target == mainLimbo) {
-                trigger(p)
-            }
-        } catch (_: NullPointerException) {
-        }
+            if (e.from == loginLimbo && target == mainLimbo) { trigger(p) }
+        } catch (_: NullPointerException) { }
     }
 
     private fun trigger(p: ProxiedPlayer) {
+        if (!StringManager.getEnableRule()) {skip(p); return}
         if (checkIsRead(p)!!) {
             skip(p)
             return
@@ -54,7 +48,6 @@ class RuleHandler : Listener {
     }
 
     private fun skip(p: ProxiedPlayer) {
-        val lobby = ProxyServer.getInstance().getServerInfo("Lobby-1")
-        p.connect(lobby)
+        p.connect(StringManager.getLobby())
     }
 }

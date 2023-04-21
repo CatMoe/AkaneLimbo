@@ -1,3 +1,5 @@
+@file:Suppress("SameParameterValue")
+
 package catmoe.fallencrystal.akanelimbo.kick
 
 import catmoe.fallencrystal.akanelimbo.util.MessageUtil.actionbar
@@ -10,6 +12,7 @@ import dev.simplix.protocolize.api.inventory.InventoryClose
 import dev.simplix.protocolize.data.ItemType
 import dev.simplix.protocolize.data.inventory.InventoryType
 import net.md_5.bungee.api.ProxyServer
+import net.md_5.bungee.api.chat.TextComponent
 import net.md_5.bungee.api.config.ServerInfo
 import net.md_5.bungee.api.connection.ProxiedPlayer
 import net.md_5.bungee.api.event.ServerKickEvent
@@ -53,6 +56,7 @@ class KickMenu : GUIBuilder() {
                 .lore(ca("&7其实你现在没有连接到任何服务器w!"))
                 .lore(ca(""))
                 .lore(ca("&b您可以选择 &a重新连接 &b或 &c回到大厅"))
+                .lore(ca("&c或者点击次物品离开服务器"))
                 .build()
         )
         setItem(
@@ -92,6 +96,8 @@ class KickMenu : GUIBuilder() {
             player!!.connect(defaultserver)
             update()
             actionbar(player, "&a正在将您传送到大厅..")
+        } else if (click.slot() == 13 && click.clickedItem().itemType() == ItemType.REDSTONE_BLOCK) {
+            kick(player, "")
         } else {
             update()
         }
@@ -99,8 +105,7 @@ class KickMenu : GUIBuilder() {
 
     override fun onClose(close: InventoryClose?) {
         try {
-            if (!(player!!.name.equals(handlePlayer!!.name))) return
-            if (!this.close) {
+            if (player!!.server.info.name.contains("AkaneLimbo") && !this.close) {
                 open(player!!)
                 actionbar(player, "&b别忘了这可是不存在的地方 关闭了就出不来了哦~")
             } else {
@@ -113,6 +118,10 @@ class KickMenu : GUIBuilder() {
 
     private fun ca(text: String?): String {
         return ForceFormatCode.replaceFormat(text!!)
+    }
+
+    private fun kick(p: ProxiedPlayer?, reason: String?) {
+        p?.disconnect(TextComponent(ca(reason)))
     }
 
     private fun notOnline(server: ServerInfo?): Boolean {
