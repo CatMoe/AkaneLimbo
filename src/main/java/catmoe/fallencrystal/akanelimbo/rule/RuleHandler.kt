@@ -6,6 +6,7 @@ import net.md_5.bungee.api.event.ServerSwitchEvent
 import net.md_5.bungee.api.plugin.Listener
 import net.md_5.bungee.event.EventHandler
 import java.util.*
+import kotlin.concurrent.schedule
 
 class RuleHandler : Listener {
     private var loginLimbo = StringManager.getLoginLimbo()
@@ -15,7 +16,7 @@ class RuleHandler : Listener {
         val p = e.player
         val target = p.server.info
         try {
-            if (e.from == null && target == mainLimbo) { trigger(p); return }
+            if (e.from == null && target == mainLimbo) { trigger(p) }
             // 从其它服务器跳转
             if (e.from == loginLimbo && target == mainLimbo) { trigger(p) }
         } catch (_: NullPointerException) { }
@@ -23,31 +24,12 @@ class RuleHandler : Listener {
 
     private fun trigger(p: ProxiedPlayer) {
         if (!StringManager.getEnableRule()) {skip(p); return}
-        if (checkIsRead(p)!!) {
-            skip(p)
-            return
+        val menu = RuleMenu()
+        menu.closed = false
+        Timer().schedule(1500L) {
+            try { menu.open(p) } catch (_: NullPointerException) { } catch (e: Exception) { skip(p) }
         }
-        val timer = Timer()
-        timer.schedule(object : TimerTask() {
-            override fun run() {
-                try {
-                    val menu = RuleMenu()
-                    menu.closed = false
-                    menu.open(p)
-                } catch (_: NullPointerException) {
-                } catch (e: Exception) {
-                    skip(p)
-                }
-            }}, 1500)
     }
 
-    private fun checkIsRead(p: ProxiedPlayer?): Boolean? {
-        val file = SaveReadUtil()
-        file.loadData()
-        return file.getPlayerData(p!!)
-    }
-
-    private fun skip(p: ProxiedPlayer) {
-        p.connect(StringManager.getLobby())
-    }
+    private fun skip(p: ProxiedPlayer) { p.connect(StringManager.getLobby()) }
 }

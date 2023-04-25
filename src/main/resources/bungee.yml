@@ -3,3 +3,5 @@ version: '0.0.1'
 author: CatMoe
 main: catmoe.fallencrystal.akanelimbo.AkaneLimbo
 description: idk
+depends:
+  - Protocolize

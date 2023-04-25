@@ -10,6 +10,8 @@ import net.md_5.bungee.api.ProxyServer
 import net.md_5.bungee.api.plugin.Plugin
 
 class AkaneLimbo : Plugin() {
+
+    private val proxy = ProxyServer.getInstance()
     override fun onEnable() {
         instance = this
         registerListener()
@@ -19,12 +21,13 @@ class AkaneLimbo : Plugin() {
     }
 
     private fun registerListener() {
-        val proxy = ProxyServer.getInstance()
-        proxy.pluginManager.registerListener(instance, KickRedirect())
-        proxy.pluginManager.registerListener(instance, RuleHandler())
+        proxy.pluginManager.registerListener(this, KickRedirect())
+        proxy.pluginManager.registerListener(this, RuleHandler())
     }
 
     override fun onDisable() {
+        proxy.pluginManager.unregisterListener(KickRedirect())
+        proxy.pluginManager.unregisterListener(RuleHandler())
         loginfo("&b其实吧 这个插件轻到连卸载都不需要 w=")
     }
 

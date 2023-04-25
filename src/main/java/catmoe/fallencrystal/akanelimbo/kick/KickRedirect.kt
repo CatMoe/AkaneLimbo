@@ -10,6 +10,7 @@ import net.md_5.bungee.api.event.ServerKickEvent
 import net.md_5.bungee.api.plugin.Listener
 import net.md_5.bungee.event.EventHandler
 import java.util.*
+import kotlin.concurrent.schedule
 
 class KickRedirect : Listener {
 
@@ -57,13 +58,8 @@ class KickRedirect : Listener {
         menu.handleEvent(e)
         // 发送title by @Shizoukia
         menu.sendTitle(e.player)
-        val timer = Timer()
-        timer.schedule(object : TimerTask(){
-            override fun run() {
-                try {
-                    menu.open(e.player)
-                } catch (_: NullPointerException) { }
-            }
-        } ,1500)
+        Timer().schedule(1500L) {
+            try { menu.open(e.player) } catch (_: NullPointerException) { }
+        }
     }
 }
