@@ -1,28 +1,26 @@
 package catmoe.fallencrystal.akanelimbo.rule
 
-import catmoe.fallencrystal.akanelimbo.util.menu.ForceFormatCode
-import catmoe.fallencrystal.akanelimbo.util.menu.GUIBuilder
-import catmoe.fallencrystal.akanelimbo.util.menu.GUIEnchantsList
-import catmoe.fallencrystal.akanelimbo.util.menu.ItemBuilder
+import catmoe.fallencrystal.akanelimbo.StringManager
+import catmoe.fallencrystal.akanelimbo.util.menu.*
 import dev.simplix.protocolize.api.inventory.InventoryClick
 import dev.simplix.protocolize.api.inventory.InventoryClose
 import dev.simplix.protocolize.data.ItemType
 import dev.simplix.protocolize.data.inventory.InventoryType
-import net.md_5.bungee.api.ProxyServer
 import net.md_5.bungee.api.chat.TextComponent
 import net.md_5.bungee.api.connection.ProxiedPlayer
 
 class RuleMenu : GUIBuilder() {
+    private val inventory = InventoryType.GENERIC_9X5
     private var ruleGeneral = false
     private var rulePrivacy = false
     private var ruleFinal = false
     private var ruleNotReaded = false
     private var ruleNotReadedItem = false
-    private var agreeItemItemSlot = 31
-    private var ruleFinalItemSlot = 10
-    private var ruleGeneralItemSlot = 12
-    private var rulePrivacyItemSlot = 14
-    private var ruleNotReadedItemSlot = 16
+    private var agreeItemItemSlot = AxisToSlot.calculation(5, 4, inventory)
+    private var ruleFinalItemSlot = AxisToSlot.calculation(2, 2, inventory)
+    private var ruleGeneralItemSlot = AxisToSlot.calculation(4, 2, inventory)
+    private var rulePrivacyItemSlot = AxisToSlot.calculation(6, 2, inventory)
+    private var ruleNotReadedItemSlot = AxisToSlot.calculation(8, 2, inventory)
     var closed = false
     private var empty = ""
     private var ruleAccept = "&a点击接受此条例!"
@@ -36,7 +34,7 @@ class RuleMenu : GUIBuilder() {
 
     override fun define(p: ProxiedPlayer?) {
         super.define(p)
-        this.type(InventoryType.GENERIC_9X5)
+        this.type(inventory)
         setTitle(ca("&b用户协议签署 &7[最后更新 23-02-07]"))
         agreeItem()
         ruleFinal()
@@ -338,7 +336,7 @@ class RuleMenu : GUIBuilder() {
         } else if (click.slot() == agreeItemItemSlot && click.clickedItem()
                 .itemType() == ItemType.BEACON && ruleGeneral && rulePrivacy && ruleFinal && !ruleNotReaded
         ) {
-            player!!.connect(ProxyServer.getInstance().getServerInfo("Lobby-1"))
+            player!!.connect(StringManager.getLobby())
             closed = true
             setIsRead(player!!)
         } else if (click.slot() == agreeItemItemSlot && click.clickedItem().itemType() == ItemType.REDSTONE_BLOCK) {
@@ -401,9 +399,5 @@ class RuleMenu : GUIBuilder() {
         p.disconnect(TextComponent(ca(reason)))
     }
 
-    private fun setIsRead(p: ProxiedPlayer) {
-        val read = SaveReadUtil()
-        read.loadData()
-        read.setData(p, true)
-    }
+    private fun setIsRead(p: ProxiedPlayer) { ReadCache.cachePut(p.uniqueId, true) }
 }
