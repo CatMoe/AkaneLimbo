@@ -38,6 +38,6 @@ class AkaneLimbo : Plugin() {
         commandManager.register(ServerListCommand())
         proxy.pluginManager.registerCommand(this, commandManager)
         proxy.pluginManager.registerCommand(this, HubCommand("hub", "", "hub", "lobby"))
-        proxy.pluginManager.registerCommand(this, ServerCommand("server", "", "server"))
+        proxy.pluginManager.registerCommand(this, ServerCommand("server", "", "server", plugin = this))
     }
 }
