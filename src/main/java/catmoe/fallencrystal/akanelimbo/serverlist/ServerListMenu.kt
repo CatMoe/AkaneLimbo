@@ -6,6 +6,7 @@ import catmoe.fallencrystal.akanelimbo.util.menu.ForceFormatCode
 import catmoe.fallencrystal.akanelimbo.util.menu.GUIBuilder
 import catmoe.fallencrystal.akanelimbo.util.menu.GUIEnchantsList
 import catmoe.fallencrystal.akanelimbo.util.menu.ItemBuilder
+import com.github.benmanes.caffeine.cache.Caffeine
 import dev.simplix.protocolize.api.inventory.InventoryClick
 import dev.simplix.protocolize.data.ItemType
 import dev.simplix.protocolize.data.inventory.InventoryType
@@ -17,6 +18,9 @@ import java.net.SocketAddress
 class ServerListMenu : GUIBuilder() {
 
     var executePlayer: ProxiedPlayer? = null
+
+    // 用于存储遍历的服务器
+    val serversCache = Caffeine.newBuilder().build<Int, ServerInfo>()
 
     override fun open(player: ProxiedPlayer) {
         clear()
@@ -75,6 +79,7 @@ class ServerListMenu : GUIBuilder() {
                     .lore(ca(clicktoconnect))
                     .build()
             )
+            serversCache.put(slot, s)
         }
     }
 
@@ -95,15 +100,5 @@ class ServerListMenu : GUIBuilder() {
         return ForceFormatCode.replaceFormat(text!!)
     }
 
-    private fun toServer(p: ProxiedPlayer, slot: Int) {
-        var c = 0
-        for (s in serverList) {
-            if (slot == c) {
-                p.connect(s)
-                return
-            } else {
-                c++
-            }
-        }
-    }
+    private fun toServer(p: ProxiedPlayer, slot: Int) { p.connect(serversCache.getIfPresent(slot)) }
 }

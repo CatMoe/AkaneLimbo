@@ -44,7 +44,7 @@ class HubGui : GUIBuilder() {
     }
 
     private fun placeholderItem() {
-        val slots: List<Int> = listOf(1,2,3,4,5,6,7,8,9,10,11,12,14,15,16,17,19,20,21,22,23,24,25,26)
+        val slots: List<Int> = listOf(0,1,2,3,4,5,6,7,8,9,10,11,12,14,15,16,17,19,20,21,22,23,24,25,26)
         val item = ItemType.LIGHT_GRAY_STAINED_GLASS_PANE
         for (slot in slots) {setItem(slot, ItemBuilder(item).name(ca("")).build())}
     }

@@ -362,7 +362,7 @@ class RuleMenu : GUIBuilder() {
         ) {
             disconnect(player!!, "&c下次再见!")
         } else {
-            open(player!!)
+            updateItems()
         }
     }
 

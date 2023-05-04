@@ -1,7 +1,8 @@
-package catmoe.fallencrystal.akanelimbo.serverlist
+package catmoe.fallencrystal.akanelimbo.command.commands
 
 import catmoe.fallencrystal.akanelimbo.StringManager
 import catmoe.fallencrystal.akanelimbo.command.SubCommand
+import catmoe.fallencrystal.akanelimbo.serverlist.ServerListMenu
 import net.md_5.bungee.api.CommandSender
 import net.md_5.bungee.api.connection.ProxiedPlayer
 

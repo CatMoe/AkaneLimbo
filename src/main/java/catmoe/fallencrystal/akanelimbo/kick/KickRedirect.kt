@@ -54,6 +54,10 @@ class KickRedirect : Listener {
     } // String -> ServerInfo
 
     private fun openMenu(e: ServerKickEvent) {
+        // 实例化对象 并指定一个玩家
+        // 注册BungeeCord服务端的Listener后整个class其实也已经被实例化了
+        // 所以这也是为什么要放在这里的原因
+        // 如果在class被加载时就被实例化对象 最终就会导致多个玩家同时使用菜单时出现bug
         val menu = KickMenu()
         menu.handleEvent(e)
         // 发送title by @Shizoukia

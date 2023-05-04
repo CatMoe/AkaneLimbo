@@ -2,10 +2,11 @@ package catmoe.fallencrystal.akanelimbo
 
 import catmoe.fallencrystal.akanelimbo.command.CommandManager
 import catmoe.fallencrystal.akanelimbo.command.commands.SendLimbo
+import catmoe.fallencrystal.akanelimbo.command.commands.ServerListCommand
 import catmoe.fallencrystal.akanelimbo.hub.HubCommand
 import catmoe.fallencrystal.akanelimbo.kick.KickRedirect
 import catmoe.fallencrystal.akanelimbo.rule.RuleHandler
-import catmoe.fallencrystal.akanelimbo.serverlist.ServerListCommand
+import catmoe.fallencrystal.akanelimbo.serverlist.ServerCommand
 import catmoe.fallencrystal.akanelimbo.util.MessageUtil.loginfo
 import net.md_5.bungee.api.ProxyServer
 import net.md_5.bungee.api.plugin.Plugin
@@ -37,5 +38,6 @@ class AkaneLimbo : Plugin() {
         commandManager.register(ServerListCommand())
         proxy.pluginManager.registerCommand(this, commandManager)
         proxy.pluginManager.registerCommand(this, HubCommand("hub", "", "hub", "lobby"))
+        proxy.pluginManager.registerCommand(this, ServerCommand("server", "", "server"))
     }
 }
