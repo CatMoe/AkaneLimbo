@@ -402,5 +402,5 @@ class RuleMenu : GUIBuilder() {
         p.disconnect(TextComponent(ca(reason)))
     }
 
-    private fun setIsRead(p: ProxiedPlayer) { ReadCache.cachePut(p.uniqueId, true) }
+    private fun setIsRead(p: ProxiedPlayer) { ReadCache.cachePut(p, true) }
 }
