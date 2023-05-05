@@ -1,7 +1,10 @@
 package catmoe.fallencrystal.akanelimbo.rule
 
 import catmoe.fallencrystal.akanelimbo.StringManager
-import catmoe.fallencrystal.akanelimbo.util.menu.*
+import catmoe.fallencrystal.akanelimbo.util.menu.ForceFormatCode
+import catmoe.fallencrystal.akanelimbo.util.menu.GUIBuilder
+import catmoe.fallencrystal.akanelimbo.util.menu.GUIEnchantsList
+import catmoe.fallencrystal.akanelimbo.util.menu.ItemBuilder
 import dev.simplix.protocolize.api.inventory.InventoryClick
 import dev.simplix.protocolize.api.inventory.InventoryClose
 import dev.simplix.protocolize.data.ItemType
@@ -16,11 +19,11 @@ class RuleMenu : GUIBuilder() {
     private var ruleFinal = false
     private var ruleNotReaded = false
     private var ruleNotReadedItem = false
-    private var agreeItemItemSlot = AxisToSlot.calculation(5, 4, inventory)
-    private var ruleFinalItemSlot = AxisToSlot.calculation(2, 2, inventory)
-    private var ruleGeneralItemSlot = AxisToSlot.calculation(4, 2, inventory)
-    private var rulePrivacyItemSlot = AxisToSlot.calculation(6, 2, inventory)
-    private var ruleNotReadedItemSlot = AxisToSlot.calculation(8, 2, inventory)
+    private var agreeItemItemSlot = 31
+    private var ruleFinalItemSlot = 10
+    private var ruleGeneralItemSlot = 12
+    private var rulePrivacyItemSlot = 14
+    private var ruleNotReadedItemSlot = 16
     var closed = false
     private var empty = ""
     private var ruleAccept = "&a点击接受此条例!"

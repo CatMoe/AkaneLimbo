@@ -15,7 +15,7 @@ object StringManager {
     private var commandLimbo = "CmdCreate"
     private var serverListPermission = "bungeecord.command.server"
     private var sendLimboPermission = "bungeecord.command.send"
-    private var enableRule = false
+    private var enableRule = true
 
     fun getLoginLimbo(): ServerInfo { return ProxyServer.getInstance().getServerInfo(LoginLimbo) }
     fun getMainLimbo(): ServerInfo { return ProxyServer.getInstance().getServerInfo(MainLimbo) }
