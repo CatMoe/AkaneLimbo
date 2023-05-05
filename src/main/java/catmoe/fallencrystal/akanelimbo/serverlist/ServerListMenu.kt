@@ -56,8 +56,8 @@ class ServerListMenu : GUIBuilder() {
         val name = server.name
         var motd = server.motd
         var conflictWarn = ""
-        // Just another $BungeeCord - Force Hosts
-        if (motd.contains("Just another") && motd.contains(" - Force Hosts")) { motd = "&7默认 &f- &b请前往config.yml设置" }
+        // Just another $BungeeCord - Forced Hosts
+        if (motd.contains("Just another ") && motd.contains(" - Forced Hosts")) { motd = "&7默认 &f- &b请前往config.yml设置" }
         val address = server.socketAddress
         if (addresscache.containsKey(address)) { conflictWarn = "&c(跟" + addresscache[address]!!.name + "冲突)" } else { addresscache[address] = server }
         val playing = server.players.size

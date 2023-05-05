@@ -26,7 +26,7 @@ class RuleHandler : Listener {
 
     @EventHandler(priority = 127)
     fun ruleSkip(e: ServerConnectEvent) {
-        val isRead = ReadCache.cacheGet(e.player.uniqueId)
+        val isRead = ReadCache.cacheGet(e.player)
         val target = e.target
         if (target == mainLimbo && isRead == true) {
             e.isCancelled
@@ -38,7 +38,7 @@ class RuleHandler : Listener {
         // Enabled or Disabled
         if (!StringManager.getEnableRule()) {skip(p); return}
         // Cached read user from ReadCache.kt
-        if (ReadCache.cacheGet(p.uniqueId) == true) {skip(p); return}
+        if (ReadCache.cacheGet(p) == true) {skip(p); return}
         val menu = RuleMenu()
         menu.closed = false
         Timer().schedule(1500L) {
