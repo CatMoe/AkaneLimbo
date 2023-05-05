@@ -20,7 +20,12 @@ class ServerListMenu : GUIBuilder() {
     var executePlayer: ProxiedPlayer? = null
 
     // 用于存储遍历的服务器
-    val serversCache = Caffeine.newBuilder().build<Int, ServerInfo>()
+    private val serversCache = Caffeine.newBuilder().build<Int, ServerInfo>()
+
+    private var proxy = ProxyServer.getInstance()
+
+    private val onlineServers = mutableListOf<ServerInfo>()
+    private val offlineServers = mutableListOf<ServerInfo>()
 
     override fun open(player: ProxiedPlayer) {
         clear()
@@ -33,64 +38,56 @@ class ServerListMenu : GUIBuilder() {
         define(player)
     }
 
-    private var proxy = ProxyServer.getInstance()
-    private var servers: MutableMap<String, ServerInfo> = proxy.servers!!
-    private var serverList: Collection<ServerInfo> = servers.values
+    private val clicktoconnect = "&7 > &b点击来连接到服务器"
+    private val addresscache: MutableMap<SocketAddress, ServerInfo> = HashMap()
+
     override fun define(p: ProxiedPlayer?) {
         super.define(p)
         this.type(InventoryType.GENERIC_9X6)
         setTitle(ca("&eServer List"))
-        val clicktoconnect = "&7 > &b点击来连接到服务器"
-        val addresscache: MutableMap<SocketAddress, ServerInfo> = HashMap()
-        for ((slot, s) in serverList.withIndex()) {
-            val name = s.name
-            var motd = s.motd
-            var conflictwarn = ""
-            // Just another BungeeCord / Waterfall - Force Hosts
-            // 深蓝色丑死 但又懒得改 直接进行一波暴力替换
-            if (motd.contains("Just another")) {
-                motd = "&7默认 &f- &b请前往config.yml设置"
-            }
-            val address = s.socketAddress
-            if (addresscache.containsKey(address)) {
-                conflictwarn = "&c(跟" + addresscache[address]!!.name + "冲突)"
-            } else {
-                addresscache[address] = s
-            }
-            val playing = s.players.size
-            var isOnline: String
-            var item: ItemType
-            if (socketPing(s)) {
-                isOnline = "&a(在线)"
-                item = ItemType.EMERALD_BLOCK
-            } else {
-                isOnline = "&c(离线)"
-                item = ItemType.REDSTONE_BLOCK
-            }
-            setItem(
-                slot, ItemBuilder(item)
-                    .name(ca("&b$name $isOnline")) // 有人喜欢给菜单全部物品上附魔 我不说是谁
-                    .enchantment(GUIEnchantsList.UNBREAKING, playing) // 来玩找不同吧 ——看看哪个笨蛋填了俩地址一样的服务器(?)
-                    .lore(ca("&b地址: " + s.socketAddress + " " + conflictwarn))
-                    .lore(ca("&e$playing 在线玩家"))
-                    .lore(ca("&dMOTD注释:"))
-                    .lore(ca(motd))
-                    .lore(ca(""))
-                    .lore(ca(clicktoconnect))
-                    .build()
-            )
-            serversCache.put(slot, s)
+        proxy.servers.forEach { if (socketPing(it.value)) { onlineServers.add(it.value) } else { offlineServers.add(it.value) } }
+        var slots = 0
+        onlineServers.forEach { setServerItem(slots, it, 1); slots++ }
+        offlineServers.forEach { setServerItem(slots, it, 2); slots++ }
+    }
+
+    private fun setServerItem(slot: Int, server: ServerInfo, mode: Int) {
+        // Mode 1 = Online, 2 = Offline
+        val name = server.name
+        var motd = server.motd
+        var conflictWarn = ""
+        // Just another $BungeeCord - Force Hosts
+        if (motd.contains("Just another") && motd.contains(" - Force Hosts")) { motd = "&7默认 &f- &b请前往config.yml设置" }
+        val address = server.socketAddress
+        if (addresscache.containsKey(address)) { conflictWarn = "&c(跟" + addresscache[address]!!.name + "冲突)" } else { addresscache[address] = server }
+        val playing = server.players.size
+        val isOnline: String
+        val item: ItemType
+        if (mode == 1) {
+            isOnline = "&a(在线)"
+            item = ItemType.EMERALD_BLOCK
+        } else {
+            isOnline = "&c(离线)"
+            item = ItemType.REDSTONE_BLOCK
         }
+        setItem(slot, ItemBuilder(item)
+            .name(ca("&b$name $isOnline"))
+            .enchantment(GUIEnchantsList.UNBREAKING, playing) // 有人喜欢给菜单全部物品上附魔 我不说是谁
+            .lore(ca("&b地址: " + server.socketAddress + " " + conflictWarn)) // 来玩找不同吧 ——看看哪个笨蛋填了俩地址一样的服务器(?)
+            .lore(ca("&e$playing 在线玩家"))
+            .lore(ca("&dMOTD注释:"))
+            .lore(ca(motd))
+            .lore(ca(""))
+            .lore(ca(clicktoconnect))
+            .build()
+        )
     }
 
     override fun onClick(click: InventoryClick?) {
         if (player!!.hasPermission(StringManager.getServerListPermission())) {
-            if (click!!.clickedItem().itemType() == null) {
-                update()
-            } else {
+            if (click!!.clickedItem().itemType() == ItemType.EMERALD_BLOCK) {
                 toServer(player!!, click.slot())
-                update()
-            }
+            } else { update() }
         } else {
             close()
         }
