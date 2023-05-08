@@ -42,8 +42,8 @@ class ServerListMenu : GUIBuilder() {
         setTitle(ca("&eServer List"))
         proxy.servers.forEach { if (socketPing(it.value)) { onlineServers.add(it.value) } else { offlineServers.add(it.value) } }
         var slots = 0
-        onlineServers.forEach { setServerItem(slots, it, 1); slots++ }
-        offlineServers.forEach { setServerItem(slots, it, 2); slots++ }
+        onlineServers.forEach { setServerItem(slots, it, 1); slots++; serversCache.put(slots, it) }
+        offlineServers.forEach { setServerItem(slots, it, 2); slots++; serversCache.put(slots, it) }
     }
 
     private fun setServerItem(slot: Int, server: ServerInfo, mode: Int) {
@@ -79,15 +79,11 @@ class ServerListMenu : GUIBuilder() {
     }
 
     override fun onClick(click: InventoryClick?) {
-        try {
-            if (player!!.hasPermission(StringManager.getServerListPermission())) {
-                if (click!!.clickedItem()!!.itemType()!! == ItemType.EMERALD_BLOCK) {
-                    toServer(player!!, click.slot())
-                } else { update() }
-            } else {
-                close()
-            }
-        } catch (_: NullPointerException) { update() }
+        if (serversCache.getIfPresent(click!!.slot()) != null) {
+            if (click.clickedItem().itemType()!! == ItemType.EMERALD_BLOCK) {
+                if (!player!!.hasPermission(StringManager.getServerListPermission())) { close() }
+                else { toServer(player!!, click.slot()) } }
+        } else { update() }
     }
 
     private fun ca(text: String?): String {
