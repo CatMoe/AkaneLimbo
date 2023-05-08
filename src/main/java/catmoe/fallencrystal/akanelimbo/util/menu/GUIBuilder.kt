@@ -63,6 +63,11 @@ abstract class GUIBuilder {
         inv.update()
     }
 
+    fun update() {
+        clear()
+        define(player)
+    }
+
     fun getInventoryType(value: Int): InventoryType {
         return when (value) {
             0 -> InventoryType.GENERIC_3X3

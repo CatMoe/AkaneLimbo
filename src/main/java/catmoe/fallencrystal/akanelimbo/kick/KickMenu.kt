@@ -26,10 +26,6 @@ class KickMenu : GUIBuilder() {
     private var handlePlayer: ProxiedPlayer? = null
     @JvmField
     var close = false
-    private fun update() {
-        clear()
-        define(player)
-    }
 
     override fun open(player: ProxiedPlayer) {
         clear()

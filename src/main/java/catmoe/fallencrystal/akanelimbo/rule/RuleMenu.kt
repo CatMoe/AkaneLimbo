@@ -29,6 +29,7 @@ class RuleMenu : GUIBuilder() {
     private var ruleAccept = "&a点击接受此条例!"
     private var ruleDeny = "&c不想同意? 再次点击来取消操作."
 
+
     override fun open(player: ProxiedPlayer) {
         clear()
         define(player)
@@ -365,7 +366,7 @@ class RuleMenu : GUIBuilder() {
         ) {
             disconnect(player!!, "&c下次再见!")
         } else {
-            updateItems()
+            update()
         }
     }
 

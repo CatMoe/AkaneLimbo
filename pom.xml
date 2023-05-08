@@ -18,14 +18,6 @@
 
     <repositories>
         <repository>
-            <id>aliyun-snapshot</id>
-            <url>https://maven.aliyun.com/nexus/content/repositories/snapshots/</url>
-        </repository>
-        <repository>
-            <id>aliyun</id>
-            <url>https://maven.aliyun.com/nexus/content/groups/public/</url>
-        </repository>
-        <repository>
             <id>bungeecord-repo</id>
             <url>https://oss.sonatype.org/content/repositories/snapshots</url>
         </repository>

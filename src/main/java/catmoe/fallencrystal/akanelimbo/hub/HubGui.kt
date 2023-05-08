@@ -34,7 +34,7 @@ class HubGui : GUIBuilder() {
     override fun onClick(click: InventoryClick?) {
         if (click!!.slot() == 13 && click.clickedItem().itemType() == ItemType.BEACON) { sendToLobby(player!!) }
         else if (click.slot() == 18 && click.clickedItem().itemType() == ItemType.ARROW) { close() }
-        else define(player)
+        else update()
     }
 
     private fun sendToLobby(p: ProxiedPlayer) {

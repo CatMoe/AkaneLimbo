@@ -33,11 +33,6 @@ class ServerListMenu : GUIBuilder() {
         super.open(player)
     }
 
-    private fun update() {
-        clear()
-        define(player)
-    }
-
     private val clicktoconnect = "&7 > &b点击来连接到服务器"
     private val addresscache: MutableMap<SocketAddress, ServerInfo> = HashMap()
 
@@ -84,13 +79,15 @@ class ServerListMenu : GUIBuilder() {
     }
 
     override fun onClick(click: InventoryClick?) {
-        if (player!!.hasPermission(StringManager.getServerListPermission())) {
-            if (click!!.clickedItem().itemType() == ItemType.EMERALD_BLOCK) {
-                toServer(player!!, click.slot())
-            } else { update() }
-        } else {
-            close()
-        }
+        try {
+            if (player!!.hasPermission(StringManager.getServerListPermission())) {
+                if (click!!.clickedItem()!!.itemType()!! == ItemType.EMERALD_BLOCK) {
+                    toServer(player!!, click.slot())
+                } else { update() }
+            } else {
+                close()
+            }
+        } catch (_: NullPointerException) { update() }
     }
 
     private fun ca(text: String?): String {
