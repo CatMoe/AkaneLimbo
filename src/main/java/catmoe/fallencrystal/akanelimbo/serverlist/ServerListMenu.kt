@@ -22,7 +22,7 @@ class ServerListMenu : GUIBuilder() {
     // 用于存储遍历的服务器
     private val serversCache = Caffeine.newBuilder().build<Int, ServerInfo>()
 
-    private var proxy = ProxyServer.getInstance()
+    private val proxy = ProxyServer.getInstance()
 
     private val onlineServers = mutableListOf<ServerInfo>()
     private val offlineServers = mutableListOf<ServerInfo>()
@@ -51,8 +51,8 @@ class ServerListMenu : GUIBuilder() {
         val name = server.name
         var motd = server.motd
         var conflictWarn = ""
-        // Just another $BungeeCord - Forced Hosts
-        if (motd.contains("Just another ") && motd.contains(" - Forced Hosts")) { motd = "&7默认 &f- &b请前往config.yml设置" }
+        // Just another $BungeeCord - Forced Host
+        if (motd.contains("Just another ") && motd.contains(" - Forced Host")) { motd = "&7默认 &f- &b请前往config.yml设置" }
         val address = server.socketAddress
         if (addresscache.containsKey(address)) { conflictWarn = "&c(跟" + addresscache[address]!!.name + "冲突)" } else { addresscache[address] = server }
         val playing = server.players.size
