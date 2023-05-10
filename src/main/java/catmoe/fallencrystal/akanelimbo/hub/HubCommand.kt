@@ -12,9 +12,10 @@ class HubCommand(name: String, permission: String?, vararg aliases: String?) : C
         if (sender !is ProxiedPlayer) {
             MessageUtil.logwarn("This command is disabled for console.")
         }
-        if (args.isEmpty()) { openGui(sender) }
+        if (args.isEmpty()) { sendToLobby(sender) }
     }
 
+    @Deprecated("")
     private fun openGui (sender: CommandSender) {
         val player = sender as ProxiedPlayer
         if (player.server.info == StringManager.getLobby()) {
@@ -23,5 +24,14 @@ class HubCommand(name: String, permission: String?, vararg aliases: String?) : C
         }
         val hubGui = HubGui()
         hubGui.open(player)
+    }
+
+    private fun sendToLobby(sender: CommandSender) {
+        val player = sender as ProxiedPlayer
+        if (player.server.info == StringManager.getLobby()) {
+            MessageUtil.actionbar(player, "&c您已经在大厅了! 搁这卡bug呢")
+            return
+        }
+        player.connect(StringManager.getLobby())
     }
 }

@@ -42,8 +42,8 @@ class ServerListMenu : GUIBuilder() {
         setTitle(ca("&eServer List"))
         proxy.servers.forEach { if (socketPing(it.value)) { onlineServers.add(it.value) } else { offlineServers.add(it.value) } }
         var slots = 0
-        onlineServers.forEach { setServerItem(slots, it, 1); slots++; serversCache.put(slots, it) }
-        offlineServers.forEach { setServerItem(slots, it, 2); slots++; serversCache.put(slots, it) }
+        onlineServers.forEach { setServerItem(slots, it, 1); slots++ }
+        offlineServers.forEach { setServerItem(slots, it, 2); slots++ }
     }
 
     private fun setServerItem(slot: Int, server: ServerInfo, mode: Int) {
@@ -76,6 +76,7 @@ class ServerListMenu : GUIBuilder() {
             .lore(ca(clicktoconnect))
             .build()
         )
+        serversCache.put(slot, server)
     }
 
     override fun onClick(click: InventoryClick?) {

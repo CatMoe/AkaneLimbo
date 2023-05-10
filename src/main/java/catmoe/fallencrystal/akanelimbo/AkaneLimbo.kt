@@ -1,6 +1,7 @@
 package catmoe.fallencrystal.akanelimbo
 
 import catmoe.fallencrystal.akanelimbo.command.CommandManager
+import catmoe.fallencrystal.akanelimbo.command.commands.DebugLocationCommand
 import catmoe.fallencrystal.akanelimbo.command.commands.SendLimbo
 import catmoe.fallencrystal.akanelimbo.command.commands.ServerListCommand
 import catmoe.fallencrystal.akanelimbo.hub.HubCommand
@@ -17,6 +18,7 @@ class AkaneLimbo : Plugin() {
     override fun onEnable() {
         registerListener()
         loadCommand()
+        SharedPlugin.setLimboPlugin(this)
         loginfo("&b偷偷摸摸载入 应该没人会发现的叭..")
     }
 
@@ -36,6 +38,7 @@ class AkaneLimbo : Plugin() {
         val commandManager = CommandManager("akanelimbo", "", "akanelimbo", "limbo")
         commandManager.register(SendLimbo())
         commandManager.register(ServerListCommand())
+        commandManager.register(DebugLocationCommand())
         proxy.pluginManager.registerCommand(this, commandManager)
         proxy.pluginManager.registerCommand(this, HubCommand("hub", "", "hub", "lobby"))
         proxy.pluginManager.registerCommand(this, ServerCommand("server", "", "server", plugin = this))
