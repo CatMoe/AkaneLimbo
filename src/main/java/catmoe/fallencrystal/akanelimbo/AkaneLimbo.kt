@@ -6,6 +6,7 @@ import catmoe.fallencrystal.akanelimbo.command.commands.SendLimbo
 import catmoe.fallencrystal.akanelimbo.command.commands.ServerListCommand
 import catmoe.fallencrystal.akanelimbo.hub.HubCommand
 import catmoe.fallencrystal.akanelimbo.kick.KickRedirect
+import catmoe.fallencrystal.akanelimbo.rule.ReadCache
 import catmoe.fallencrystal.akanelimbo.rule.RuleHandler
 import catmoe.fallencrystal.akanelimbo.serverlist.ServerCommand
 import catmoe.fallencrystal.akanelimbo.util.MessageUtil.loginfo
@@ -18,6 +19,7 @@ class AkaneLimbo : Plugin() {
     override fun onEnable() {
         registerListener()
         loadCommand()
+        ReadCache
         SharedPlugin.setLimboPlugin(this)
         loginfo("&b偷偷摸摸载入 应该没人会发现的叭..")
     }

@@ -340,9 +340,7 @@ class RuleMenu : GUIBuilder() {
         } else if (click.slot() == agreeItemItemSlot && click.clickedItem()
                 .itemType() == ItemType.BEACON && ruleGeneral && rulePrivacy && ruleFinal && !ruleNotReaded
         ) {
-            player!!.connect(StringManager.getLobby())
-            closed = true
-            setIsRead(player!!)
+            isRead(player!!)
         } else if (click.slot() == agreeItemItemSlot && click.clickedItem().itemType() == ItemType.REDSTONE_BLOCK) {
             disconnect(player!!, "&c下次再见!")
         } else if (click.slot() == ruleFinalItemSlot && click.clickedItem().itemType() == ItemType.PAPER) {
@@ -403,5 +401,9 @@ class RuleMenu : GUIBuilder() {
         p.disconnect(TextComponent(ca(reason)))
     }
 
-    private fun setIsRead(p: ProxiedPlayer) { ReadCache.cachePut(p, true) }
+    private fun isRead(p: ProxiedPlayer) {
+        p.connect(StringManager.getLobby())
+        closed = true
+        ReadCache.cachePut(p.uniqueId, true)
+    }
 }

@@ -1,20 +1,13 @@
 package catmoe.fallencrystal.akanelimbo.rule
 
 import com.github.benmanes.caffeine.cache.Caffeine
-import net.md_5.bungee.api.connection.ProxiedPlayer
+import java.util.*
 
 object ReadCache {
-    private val cache = Caffeine.newBuilder().build<ProxiedPlayer, Boolean>()
+    private val readCache = Caffeine.newBuilder().build<UUID, Boolean>()
 
-    @Synchronized
-    fun cachePut(player: ProxiedPlayer, value: Boolean) {cache.put(player,value)}
-
-    @Synchronized
-    fun cacheGet(player: ProxiedPlayer): Boolean? {return cache.getIfPresent(player)}
-
-    @Synchronized
-    fun cacheInvalidate(player: ProxiedPlayer) {cache.invalidate(player)}
-
-    @Synchronized
-    fun cacheInvalidateAll() {cache.invalidateAll()}
+    fun cachePut(player: UUID, value: Boolean) {readCache.put(player,value)}
+    fun cacheGet(player: UUID): Boolean? {return readCache.getIfPresent(player)}
+    fun cacheInvalidate(player: UUID) {readCache.invalidate(player)}
+    fun cacheInvalidateAll() {readCache.invalidateAll()}
 }
