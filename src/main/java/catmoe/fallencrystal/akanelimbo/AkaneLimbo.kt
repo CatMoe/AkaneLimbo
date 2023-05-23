@@ -31,7 +31,7 @@ class AkaneLimbo : Plugin() {
 
     override fun onDisable() {
         proxy.pluginManager.unregisterListener(KickRedirect())
-        proxy.pluginManager.unregisterListener(RuleHandler())
+        if (StringManager.getEnableRule()) { proxy.pluginManager.unregisterListener(RuleHandler()) }
         proxy.pluginManager.unregisterCommand(CommandManager("akanelimbo", "", "akanelimbo", "limbo"))
         proxy.pluginManager.unregisterCommand(HubCommand("hub", "", "hub", "lobby"))
     }
