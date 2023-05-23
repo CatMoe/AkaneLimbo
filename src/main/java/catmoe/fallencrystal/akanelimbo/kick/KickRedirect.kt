@@ -1,5 +1,3 @@
-@file:Suppress("DEPRECATION")
-
 package catmoe.fallencrystal.akanelimbo.kick
 
 import catmoe.fallencrystal.akanelimbo.StringManager
@@ -21,29 +19,21 @@ class KickRedirect : Listener {
      * Violations - Ban Reason
      * Null - ReadTimedOut : null
      */
-    private var dontRedirectReason: List<String> = mutableListOf("Banned", "Cheating", "Proxy", "Violations", "Null")
+    private var dontRedirectReason: List<String> = mutableListOf("Banned", "Cheating", "Proxy", "Violations")
     private var dontRedirectServer: List<String> = mutableListOf("LoginLimbo", "MainLimbo")
     private var limbo = LimboCreater()
+
     @EventHandler
     fun kicked(e: ServerKickEvent) {
         var shouldRedirect = true
-        if (e.kickReason.isNullOrEmpty()) return
         try {
-            for (reason in dontRedirectReason) {
-                if (Arrays.toString(e.kickReasonComponent).contains(reason)) {
-                    shouldRedirect = false
-                }
-            }
-            for (server in dontRedirectServer) {
-                if (e.kickedFrom == getServer(server)) {
-                    shouldRedirect = false
-                }
-            }
+            for (reason in dontRedirectReason) { if (Arrays.toString(e.kickReasonComponent).contains(reason)) { shouldRedirect = false } }
+            for (server in dontRedirectServer) { if (e.kickedFrom == getServer(server)) { shouldRedirect = false } }
             if (!shouldRedirect) return
             limbo.createServer(e.player, StringManager.getKickRedirectLimbo())
             limbo.connect2(e)
             openMenu(e)
-        } catch (ignore: NullPointerException) {
+        } catch (_: NullPointerException) {
             // 如果在scheduleDelayedTask打开菜单前玩家就已经断开连接 则会抛出 ProxiedPlayer = null的错误
             // 在此处catch ignore.
         }
@@ -62,8 +52,6 @@ class KickRedirect : Listener {
         menu.handleEvent(e)
         // 发送title by @Shizoukia
         menu.sendTitle(e.player)
-        Timer().schedule(1500L) {
-            try { menu.open(e.player) } catch (_: NullPointerException) { }
-        }
+        Timer().schedule(1500L) { if (e.player.isConnected) { try { menu.open(e.player) } catch (_: NullPointerException) { } } } // 当玩家离开时会抛出NPE 在此处ignore.
     }
 }

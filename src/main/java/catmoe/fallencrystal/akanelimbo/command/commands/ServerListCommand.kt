@@ -16,13 +16,7 @@ class ServerListCommand : SubCommand {
         menu.open(sender)
     }
 
-    private fun getTabCompleterMap(): MutableMap<Int, List<String>> {
-        val map : MutableMap<Int, List<String>> = HashMap()
-        val tip1 = ArrayList<String>()
-        tip1.add("?")
-        map[1] = tip1
-        return map
-    }
+    private fun getTabCompleterMap(): MutableMap<Int, List<String>> { return HashMap<Int, List<String>>() }
 
     override val permission: String get() = StringManager.getServerListPermission()
     override val tabCompleter: MutableMap<Int, List<String>> get() = getTabCompleterMap()
