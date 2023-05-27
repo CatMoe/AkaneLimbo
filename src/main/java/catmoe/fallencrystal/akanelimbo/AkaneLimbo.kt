@@ -22,6 +22,7 @@ class AkaneLimbo : Plugin() {
         ReadCache
         SharedPlugin.setLimboPlugin(this)
         loginfo("&b偷偷摸摸载入 应该没人会发现的叭..")
+        if (proxy.players.isNotEmpty()) { proxy.players.forEach { ReadCache.cachePut(it.uniqueId, true) } }
     }
 
     private fun registerListener() {
@@ -43,6 +44,6 @@ class AkaneLimbo : Plugin() {
         commandManager.register(DebugLocationCommand())
         proxy.pluginManager.registerCommand(this, commandManager)
         proxy.pluginManager.registerCommand(this, HubCommand("hub", "", "hub", "lobby"))
-        proxy.pluginManager.registerCommand(this, ServerCommand("server", "", "server", plugin = this))
+        proxy.pluginManager.registerCommand(this, ServerCommand("server", "", "server", "s", plugin = this))
     }
 }
