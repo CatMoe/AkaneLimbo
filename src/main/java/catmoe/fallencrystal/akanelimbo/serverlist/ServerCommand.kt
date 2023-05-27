@@ -2,6 +2,7 @@ package catmoe.fallencrystal.akanelimbo.serverlist
 
 import catmoe.fallencrystal.akanelimbo.util.MessageUtil
 import catmoe.fallencrystal.akanelimbo.util.ServerOnlineCheck
+import catmoe.fallencrystal.moefilter.api.user.displaycache.DisplayCache
 import net.md_5.bungee.api.CommandSender
 import net.md_5.bungee.api.ProxyServer
 import net.md_5.bungee.api.config.ServerInfo
@@ -36,17 +37,35 @@ class ServerCommand(name: String?, permission: String?, vararg aliases: String?,
 
     override fun onTabComplete(sender: CommandSender?, args: Array<out String>?): MutableIterable<String> {
         if (sender?.hasPermission("bungeecord.command.server") == false) return mutableListOf()
-        if (args?.size!! > 1) return mutableListOf()
-        val input = args.getOrNull(0) ?: ""
+        val input = args!!.getOrNull(0) ?: ""
         val matchedServer: MutableList<String> = mutableListOf()
-        val nonMatchServer: MutableList<String> = mutableListOf()
         val matchedPlayer: MutableList<String> = mutableListOf()
-        val nonMatchPlayer: MutableList<String> = mutableListOf()
         val result: MutableList<String> = mutableListOf()
-        proxy.servers.forEach { if (it.value.name.startsWith(input, ignoreCase = true)) matchedServer.add(it.value.name) else nonMatchServer.add(it.value.name) }
-        proxy.players.forEach { if (proxy.getServerInfo(it.name) == null) { if (it.name.startsWith(input)) matchedPlayer.add(it.name) else nonMatchPlayer.add(it.name) } }
-        val tabComplete: MutableCollection<MutableList<String>> = mutableListOf(matchedServer, matchedPlayer, nonMatchServer, nonMatchPlayer)
-        tabComplete.forEach { it.sort(); result.addAll(it); }
-        return result
+        proxy.servers.forEach { if (it.value.name.startsWith(input, ignoreCase = true)) matchedServer.add(it.value.name) }
+        proxy.players.forEach { if (proxy.getServerInfo(it.name) == null) { if (it.name.startsWith(input)) matchedPlayer.add(it.name) } }
+        val tabComplete: MutableCollection<MutableList<String>> = mutableListOf(matchedServer, matchedPlayer)
+        tabComplete.forEach { result.addAll(it); it.sort() }
+        sendTips(sender, input, matchedServer, matchedPlayer, result)
+        return if (args.size > 1) mutableListOf() else result
+    }
+
+    private fun sendTips(sender: CommandSender?, input: String, matchedServer: MutableList<String>, matchedPlayer: MutableList<String>, result: MutableList<String>) {
+        val player = (sender ?: return) as ProxiedPlayer
+        if (input.isEmpty()) { MessageUtil.actionbar(player, "&e请键入内容以开始过滤. &7[${matchedServer.size} 服务器  ${matchedPlayer.size} 玩家.]"); return }
+        if (result.isEmpty()) { MessageUtil.actionbar(player, "&e没有匹配的玩家或服务器."); return }
+        if (matchedServer.size>1 || matchedPlayer.size>1) { MessageUtil.actionbar(player, "&e将搜索范围缩小至 &f${matchedServer.size} &e个服务器和 &f${matchedPlayer.size} &e位玩家."); return }
+        val server = getServer(matchedServer, matchedPlayer) ?: return
+        val isConnected = if (player.server.info == server) "  &c[已连接到此服务器]" else ""
+        val isOnline = if (ServerOnlineCheck.socketPing(server)) "&a✔" else "&c✖"
+        val onlinePlayers = if (server.players.isEmpty()) "" else "(${server.players.size})"
+        if (matchedServer.size == 1) { MessageUtil.actionbar(player, "&e服务器: ${server.name} &b在线状态: $isOnline $onlinePlayers$isConnected"); return }
+        val targetPlayer = proxy.getPlayer(matchedPlayer[0]) ?: return
+        val targetDisplay = DisplayCache.getDisplay(targetPlayer.uniqueId)
+        val targetDisplayName = "${targetDisplay.displayPrefix}${targetPlayer.displayName}${targetDisplay.displaySuffix}"
+        if (matchedPlayer.size == 1) { MessageUtil.actionbar(player, "&e玩家 $targetDisplayName &e服务器: ${server.name} &b在线状态: $isOnline $onlinePlayers$isConnected") }
+    }
+
+    private fun getServer(p0: MutableList<String>, p1: MutableList<String>): ServerInfo? {
+        return if (p0.size == 1) proxy.getServerInfo(p0[0]) else if (p1.size == 1) (proxy.getPlayer(p1[0]) ?: return null).server.info else null
     }
 }
