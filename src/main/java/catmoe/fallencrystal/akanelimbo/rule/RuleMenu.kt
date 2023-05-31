@@ -1,6 +1,8 @@
 package catmoe.fallencrystal.akanelimbo.rule
 
+import catmoe.fallencrystal.akanelimbo.SharedPlugin
 import catmoe.fallencrystal.akanelimbo.StringManager
+import catmoe.fallencrystal.akanelimbo.util.MessageUtil
 import catmoe.fallencrystal.akanelimbo.util.menu.ForceFormatCode
 import catmoe.fallencrystal.akanelimbo.util.menu.GUIBuilder
 import catmoe.fallencrystal.akanelimbo.util.menu.GUIEnchantsList
@@ -9,8 +11,10 @@ import dev.simplix.protocolize.api.inventory.InventoryClick
 import dev.simplix.protocolize.api.inventory.InventoryClose
 import dev.simplix.protocolize.data.ItemType
 import dev.simplix.protocolize.data.inventory.InventoryType
+import net.md_5.bungee.api.ProxyServer
 import net.md_5.bungee.api.chat.TextComponent
 import net.md_5.bungee.api.connection.ProxiedPlayer
+import java.util.concurrent.TimeUnit
 
 class RuleMenu : GUIBuilder() {
     private val inventory = InventoryType.GENERIC_9X5
@@ -28,6 +32,20 @@ class RuleMenu : GUIBuilder() {
     private var empty = ""
     private var ruleAccept = "&a点击接受此条例!"
     private var ruleDeny = "&c不想同意? 再次点击来取消操作."
+
+    private val countdownMessage = "&c&l请在 &e&l[sec] &c&l秒内同意本协议 否则将自动视为拒绝协议"
+
+    init {
+        var count = 30
+        ProxyServer.getInstance().scheduler.schedule(SharedPlugin.getLimboPlugin(), {
+            try {
+                if (player != null) {
+                    if (count != 0) { MessageUtil.actionbar(player, countdownMessage.replace("[sec]", count.toString())); count-- }
+                    else { closed = true; disconnect(player!!, ""); return@schedule }
+                }
+            } catch (_: NullPointerException) {}
+        }, 1, TimeUnit.SECONDS)
+    }
 
 
     override fun open(player: ProxiedPlayer) {
@@ -380,15 +398,9 @@ class RuleMenu : GUIBuilder() {
 
     override fun onClose(close: InventoryClose?) {
         try {
-            if (!this.closed) {
-                open(player!!)
-            } else {
-                close()
-            }
+            if (!this.closed) { open(player!!) } else { close() }
             // 用法详见KickMenu
-        } catch (ex: NullPointerException) {
-            this.closed = true
-        }
+        } catch (ex: NullPointerException) { this.closed = true }
     }
 
     private fun ca(text: String?): String {

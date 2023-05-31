@@ -1,6 +1,8 @@
 package catmoe.fallencrystal.akanelimbo.rule
 
+import catmoe.fallencrystal.akanelimbo.SharedPlugin
 import catmoe.fallencrystal.akanelimbo.StringManager
+import net.md_5.bungee.api.ProxyServer
 import net.md_5.bungee.api.connection.ProxiedPlayer
 import net.md_5.bungee.api.event.ServerSwitchEvent
 import net.md_5.bungee.api.plugin.Listener
@@ -24,14 +26,16 @@ class RuleHandler : Listener {
     }
 
     private fun trigger(p: ProxiedPlayer) {
-        // Enabled or Disabled
-        if (!StringManager.getEnableRule()) {skip(p); return}
-        // Cached read user from ReadCache.kt
-        if (ReadCache.cacheGet(p.uniqueId) == true) {skip(p); return}
-        val menu = RuleMenu()
-        menu.closed = false
-        Timer().schedule(1500L) {
-            try { menu.open(p) } catch (_: NullPointerException) { } catch (e: Exception) { skip(p) }
+        ProxyServer.getInstance().scheduler.runAsync(SharedPlugin.getLimboPlugin()) {
+            // Enabled or Disabled
+            if (!StringManager.getEnableRule()) {skip(p); return@runAsync }
+            // Cached read user from ReadCache.kt
+            if (ReadCache.cacheGet(p.uniqueId) == true) {skip(p); return@runAsync }
+            val menu = RuleMenu()
+            menu.closed = false
+            Timer().schedule(1500L) {
+                try { menu.open(p) } catch (_: NullPointerException) { } catch (e: Exception) { skip(p) }
+            }
         }
     }
 
