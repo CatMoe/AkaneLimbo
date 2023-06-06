@@ -2,12 +2,12 @@
 
 package catmoe.fallencrystal.akanelimbo.kick
 
-import catmoe.fallencrystal.akanelimbo.util.MessageUtil
-import catmoe.fallencrystal.akanelimbo.util.MessageUtil.actionbar
 import catmoe.fallencrystal.akanelimbo.util.ServerOnlineCheck.socketPing
 import catmoe.fallencrystal.akanelimbo.util.menu.ForceFormatCode
 import catmoe.fallencrystal.akanelimbo.util.menu.GUIBuilder
 import catmoe.fallencrystal.akanelimbo.util.menu.ItemBuilder
+import catmoe.fallencrystal.moefilter.util.message.MessageUtil.sendActionbar
+import catmoe.fallencrystal.moefilter.util.message.MessageUtil.sendTitle
 import dev.simplix.protocolize.api.inventory.InventoryClick
 import dev.simplix.protocolize.api.inventory.InventoryClose
 import dev.simplix.protocolize.data.ItemType
@@ -81,20 +81,20 @@ class KickMenu : GUIBuilder() {
     override fun onClick(click: InventoryClick?) {
         if (click!!.slot() == 11 && click.clickedItem().itemType() == ItemType.REPEATER) {
             if (notOnline(kickfrom)) {
-                actionbar(player, "&c目标服务器似乎已离线 请稍后再试")
+                sendActionbar(player!!, "&c目标服务器似乎已离线 请稍后再试")
                 return
             }
             player!!.connect(kickfrom)
             update()
-            actionbar(player, "&a正在尝试重新连接 请稍后..")
+            sendActionbar(player!!, "&a正在尝试重新连接 请稍后..")
         } else if (click.slot() == 15 && click.clickedItem().itemType() == ItemType.BEACON) {
             if (notOnline(defaultserver)) {
-                actionbar(player, "&c目标服务器似乎已离线 请稍后再试")
+                sendActionbar(player!!, "&c目标服务器似乎已离线 请稍后再试")
                 return
             }
             player!!.connect(defaultserver)
             update()
-            actionbar(player, "&a正在将您传送到大厅..")
+            sendActionbar(player!!, "&a正在将您传送到大厅..")
         } else if (click.slot() == 13 && click.clickedItem().itemType() == ItemType.REDSTONE_BLOCK) {
             kick(player, "")
         } else {
@@ -106,7 +106,7 @@ class KickMenu : GUIBuilder() {
         try {
             if (player!!.server.info.name.contains("AkaneLimbo") && !this.close) {
                 open(player!!)
-                actionbar(player, "&b别忘了这可是不存在的地方 关闭了就出不来了哦~")
+                sendActionbar(player!!, "&b别忘了这可是不存在的地方 关闭了就出不来了哦~")
             } else {
                 close()
             }
@@ -137,14 +137,14 @@ class KickMenu : GUIBuilder() {
     fun sendTitle(p: ProxiedPlayer?) {
         val title = "&c连接已丢失"
         val subtitle = "&f在菜单内选择 &b回到大厅 &f或 &b重新连接&f"
-        MessageUtil.fulltitle(p!!, title, subtitle, 18, 5, 0)
+        sendTitle(p!!, title, subtitle, 18, 5, 0)
         val scheduledExecutorService = Executors.newSingleThreadScheduledExecutor()
         // 创建循环
         scheduledExecutorService.scheduleAtFixedRate({
             if (!p.server.info.name.contains("AkaneLimbo")) {
-                MessageUtil.fulltitle(p, "", "", 1, 0, 0)
+                sendTitle(p, "", "", 1, 0, 0)
                 scheduledExecutorService.shutdownNow()
-            } else { MessageUtil.fulltitle(p, title, subtitle, 21, 0, 0) }
+            } else { sendTitle(p, title, subtitle, 21, 0, 0) }
         }, 1, 1, TimeUnit.SECONDS)
     }
 }

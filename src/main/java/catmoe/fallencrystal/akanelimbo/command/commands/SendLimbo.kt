@@ -3,7 +3,7 @@ package catmoe.fallencrystal.akanelimbo.command.commands
 import catmoe.fallencrystal.akanelimbo.StringManager
 import catmoe.fallencrystal.akanelimbo.command.SubCommand
 import catmoe.fallencrystal.akanelimbo.util.LimboCreater
-import catmoe.fallencrystal.akanelimbo.util.MessageUtil.prefixsender
+import catmoe.fallencrystal.moefilter.util.message.MessageUtil.sendMessage
 import net.md_5.bungee.api.CommandSender
 import net.md_5.bungee.api.ProxyServer
 import net.md_5.bungee.api.connection.ProxiedPlayer
@@ -18,7 +18,7 @@ class SendLimbo : SubCommand {
         // 将自己发送到Limbo
         if (args[1].equals("me", ignoreCase = true)) {
             if (sender !is ProxiedPlayer) {
-                prefixsender(sender!!, "&cConsole is a invalid target.")
+                sendMessage(sender!!, "&cConsole is a invalid target.")
                 return
             }
             limbo.createServer(sender, StringManager.getCommandLimbo())

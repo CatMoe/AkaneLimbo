@@ -1,20 +1,19 @@
 package catmoe.fallencrystal.akanelimbo.rule
 
-import catmoe.fallencrystal.akanelimbo.SharedPlugin
 import catmoe.fallencrystal.akanelimbo.StringManager
-import net.md_5.bungee.api.ProxyServer
+import catmoe.fallencrystal.moefilter.api.event.EventListener
+import catmoe.fallencrystal.moefilter.api.event.FilterEvent
+import catmoe.fallencrystal.moefilter.api.event.events.bungee.AsyncServerSwitchEvent
 import net.md_5.bungee.api.connection.ProxiedPlayer
-import net.md_5.bungee.api.event.ServerSwitchEvent
-import net.md_5.bungee.api.plugin.Listener
-import net.md_5.bungee.event.EventHandler
 import java.util.*
 import kotlin.concurrent.schedule
 
-class RuleHandler : Listener {
+class RuleHandler : EventListener {
     private var loginLimbo = StringManager.getLoginLimbo()
     private var mainLimbo = StringManager.getMainLimbo()
-    @EventHandler
-    fun serverSwitchHandler(e: ServerSwitchEvent) {
+
+    @FilterEvent
+    fun serverSwitchHandler(e: AsyncServerSwitchEvent) {
         val p = e.player
         val target = p.server.info
         try {
@@ -26,16 +25,15 @@ class RuleHandler : Listener {
     }
 
     private fun trigger(p: ProxiedPlayer) {
-        ProxyServer.getInstance().scheduler.runAsync(SharedPlugin.getLimboPlugin()) {
-            // Enabled or Disabled
-            if (!StringManager.getEnableRule()) {skip(p); return@runAsync }
-            // Cached read user from ReadCache.kt
-            if (ReadCache.cacheGet(p.uniqueId) == true) {skip(p); return@runAsync }
-            val menu = RuleMenu()
-            menu.closed = false
-            Timer().schedule(1500L) {
-                try { menu.open(p) } catch (_: NullPointerException) { } catch (e: Exception) { skip(p) }
-            }
+        // Enabled or Disabled
+        if (!StringManager.getEnableRule()) {skip(p); return }
+        // Cached read user from ReadCache.kt
+        if (ReadCache.cacheGet(p.uniqueId) == true) {skip(p); return }
+        val menu = RuleMenu()
+        menu.closed = false
+        menu.countdown(p)
+        Timer().schedule(1500L) {
+            try { menu.open(p) } catch (_: NullPointerException) { } catch (e: Exception) { skip(p) }
         }
     }
 

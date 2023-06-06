@@ -1,6 +1,6 @@
 package catmoe.fallencrystal.akanelimbo.command
 
-import catmoe.fallencrystal.akanelimbo.util.MessageUtil.prefixsender
+import catmoe.fallencrystal.moefilter.util.message.MessageUtil
 import net.md_5.bungee.api.CommandSender
 import net.md_5.bungee.api.connection.ProxiedPlayer
 import net.md_5.bungee.api.plugin.Command
@@ -18,7 +18,7 @@ class CommandManager(name: String?, permission: String?, vararg aliases: String?
 
     override fun execute(sender: CommandSender, args: Array<String>) {
         if (args.isEmpty()) {
-            prefixsender(sender, "idk")
+            MessageUtil.sendMessage(sender, "idk")
             return
         }
         val cmd = getSubCommandFromArgs(args[0])

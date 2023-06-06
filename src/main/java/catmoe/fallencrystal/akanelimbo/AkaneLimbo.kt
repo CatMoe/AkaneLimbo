@@ -9,7 +9,8 @@ import catmoe.fallencrystal.akanelimbo.kick.KickRedirect
 import catmoe.fallencrystal.akanelimbo.rule.ReadCache
 import catmoe.fallencrystal.akanelimbo.rule.RuleHandler
 import catmoe.fallencrystal.akanelimbo.serverlist.ServerCommand
-import catmoe.fallencrystal.akanelimbo.util.MessageUtil.loginfo
+import catmoe.fallencrystal.moefilter.api.event.EventManager
+import catmoe.fallencrystal.moefilter.util.message.MessageUtil.logInfo
 import net.md_5.bungee.api.ProxyServer
 import net.md_5.bungee.api.plugin.Plugin
 
@@ -21,18 +22,18 @@ class AkaneLimbo : Plugin() {
         loadCommand()
         ReadCache
         SharedPlugin.setLimboPlugin(this)
-        loginfo("&b偷偷摸摸载入 应该没人会发现的叭..")
+        logInfo("&b偷偷摸摸载入 应该没人会发现的叭..")
         if (proxy.players.isNotEmpty()) { proxy.players.forEach { ReadCache.cachePut(it.uniqueId, true) } }
     }
 
     private fun registerListener() {
         proxy.pluginManager.registerListener(this, KickRedirect())
-        if (StringManager.getEnableRule()) {proxy.pluginManager.registerListener(this, RuleHandler())}
+        if (StringManager.getEnableRule()) { EventManager.registerListener(RuleHandler()) }
     }
 
     override fun onDisable() {
         proxy.pluginManager.unregisterListener(KickRedirect())
-        if (StringManager.getEnableRule()) { proxy.pluginManager.unregisterListener(RuleHandler()) }
+        if (StringManager.getEnableRule()) { EventManager.unregisterListener(RuleHandler()) }
         proxy.pluginManager.unregisterCommand(CommandManager("akanelimbo", "", "akanelimbo", "limbo"))
         proxy.pluginManager.unregisterCommand(HubCommand("hub", "", "hub", "lobby"))
     }

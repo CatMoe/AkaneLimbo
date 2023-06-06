@@ -1,8 +1,8 @@
 package catmoe.fallencrystal.akanelimbo.serverlist
 
-import catmoe.fallencrystal.akanelimbo.util.MessageUtil
 import catmoe.fallencrystal.akanelimbo.util.ServerOnlineCheck
 import catmoe.fallencrystal.moefilter.api.user.displaycache.DisplayCache
+import catmoe.fallencrystal.moefilter.util.message.MessageUtil
 import net.md_5.bungee.api.CommandSender
 import net.md_5.bungee.api.ProxyServer
 import net.md_5.bungee.api.config.ServerInfo
@@ -25,14 +25,14 @@ class ServerCommand(name: String?, permission: String?, vararg aliases: String?,
                 menu.open(sender)
                 return@runAsync
             } else {
-                if (proxy.getServerInfo(args[0]) != null) { toServer(sender, proxy.getServerInfo(args[0])) } else if (proxy.getPlayer(args[0]) != null) { toServer(sender, proxy.getPlayer(args[0]).server.info) } else { MessageUtil.actionbar(sender, "&c未找到名为 ${args[0]} 的服务器") }
+                if (proxy.getServerInfo(args[0]) != null) { toServer(sender, proxy.getServerInfo(args[0])) } else if (proxy.getPlayer(args[0]) != null) { toServer(sender, proxy.getPlayer(args[0]).server.info) } else { MessageUtil.sendActionbar(sender, "&c未找到名为 ${args[0]} 的服务器") }
             }
         }
     }
 
     private fun toServer(player: ProxiedPlayer, server: ServerInfo) {
-        if (player.server.info == server) { MessageUtil.actionbar(player, "&c您已经连接到那个服务器了!"); return }
-        if (ServerOnlineCheck.socketPing(server)) { player.connect(server) } else MessageUtil.actionbar(player, "&c${server.name} 服务器目前离线或不可用 请稍后再试.")
+        if (player.server.info == server) { MessageUtil.sendActionbar(player, "&c您已经连接到那个服务器了!"); return }
+        if (ServerOnlineCheck.socketPing(server)) { player.connect(server) } else MessageUtil.sendActionbar(player, "&c${server.name} 服务器目前离线或不可用 请稍后再试.")
     }
 
     override fun onTabComplete(sender: CommandSender?, args: Array<out String>?): MutableIterable<String> {
@@ -51,19 +51,19 @@ class ServerCommand(name: String?, permission: String?, vararg aliases: String?,
 
     private fun sendTips(sender: CommandSender?, input: String, matchedServer: MutableList<String>, matchedPlayer: MutableList<String>, result: MutableList<String>) {
         val player = (sender ?: return) as ProxiedPlayer
-        if (input.isEmpty()) { MessageUtil.actionbar(player, "&e请键入内容以开始过滤. &7[${matchedServer.size} 服务器  ${matchedPlayer.size} 玩家.]"); return }
-        if (result.isEmpty()) { MessageUtil.actionbar(player, "&e没有匹配的玩家或服务器."); return }
+        if (input.isEmpty()) { MessageUtil.sendActionbar(player, "&e请键入内容以开始过滤. &7[${matchedServer.size} 服务器  ${matchedPlayer.size} 玩家.]"); return }
+        if (result.isEmpty()) { MessageUtil.sendActionbar(player, "&e没有匹配的玩家或服务器."); return }
         if (matchedServer.size>1 || matchedPlayer.size>1 && proxy.getServerInfo(input) == null && proxy.getPlayer(input) == null)
-        { MessageUtil.actionbar(player, "&e将搜索范围缩小至 &f${matchedServer.size} &e个服务器和 &f${matchedPlayer.size} &e位玩家."); return }
+        { MessageUtil.sendActionbar(player, "&e将搜索范围缩小至 &f${matchedServer.size} &e个服务器和 &f${matchedPlayer.size} &e位玩家."); return }
         val server = getServer(matchedServer, matchedPlayer, input) ?: return
         val isConnected = if (player.server.info == server) "  &c[已连接到此服务器]" else ""
         val isOnline = if (ServerOnlineCheck.socketPing(server)) "&a✔" else "&c✖"
         val onlinePlayers = if (server.players.isEmpty()) "" else "(${server.players.size})"
-        if (matchedServer.size > 0) { MessageUtil.actionbar(player, "&e服务器: ${server.name} &b在线状态: $isOnline $onlinePlayers$isConnected"); return }
+        if (matchedServer.size > 0) { MessageUtil.sendActionbar(player, "&e服务器: ${server.name} &b在线状态: $isOnline $onlinePlayers$isConnected"); return }
         val targetPlayer = proxy.getPlayer(matchedPlayer[0]) ?: return
         val targetDisplay = DisplayCache.getDisplay(targetPlayer.uniqueId)
         val targetDisplayName = "${targetDisplay.displayPrefix}${targetPlayer.displayName}${targetDisplay.displaySuffix}"
-        if (matchedPlayer.size > 0) { MessageUtil.actionbar(player, "&e玩家 $targetDisplayName &e服务器: ${server.name} &b在线状态: $isOnline $onlinePlayers$isConnected") }
+        if (matchedPlayer.size > 0) { MessageUtil.sendActionbar(player, "&e玩家 $targetDisplayName &e服务器: ${server.name} &b在线状态: $isOnline $onlinePlayers$isConnected") }
     }
 
     private fun getServer(p0: MutableList<String>, p1: MutableList<String>, input: String): ServerInfo? {

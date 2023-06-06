@@ -2,7 +2,7 @@ package catmoe.fallencrystal.akanelimbo.hub
 
 import catmoe.fallencrystal.akanelimbo.SharedPlugin
 import catmoe.fallencrystal.akanelimbo.StringManager
-import catmoe.fallencrystal.akanelimbo.util.MessageUtil
+import catmoe.fallencrystal.moefilter.util.message.MessageUtil
 import net.md_5.bungee.api.CommandSender
 import net.md_5.bungee.api.ProxyServer
 import net.md_5.bungee.api.connection.ProxiedPlayer
@@ -17,7 +17,7 @@ class HubCommand(name: String, permission: String?, vararg aliases: String?) : C
     private val bedwarsLobby = "bedwarslobby"
 
     override fun execute(sender: CommandSender, args: Array<String>) {
-        if (sender !is ProxiedPlayer) { MessageUtil.logwarn("This command is disabled for console.") }
+        if (sender !is ProxiedPlayer) { MessageUtil.logWarn("This command is disabled for console.") }
         if (args.isEmpty()) { sendToLobby(sender as ProxiedPlayer) }
     }
 
@@ -25,7 +25,7 @@ class HubCommand(name: String, permission: String?, vararg aliases: String?) : C
         proxy.scheduler.runAsync(SharedPlugin.getLimboPlugin()) {
             val playerServer = player.server.info
             if (isMatch(bedwarsServer, playerServer.name)) { val lobby = proxy.getServerInfo(bedwarsLobby) ?: return@runAsync; player.connect(lobby) }
-            if (playerServer == StringManager.getLobby()) { MessageUtil.actionbar(player, "&c您已经在大厅了! 搁这卡bug呢"); return@runAsync }
+            if (playerServer == StringManager.getLobby()) { MessageUtil.sendActionbar(player, "&c您已经在大厅了! 搁这卡bug呢"); return@runAsync }
             player.connect(StringManager.getLobby())
         }
     }

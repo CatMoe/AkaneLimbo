@@ -2,11 +2,11 @@ package catmoe.fallencrystal.akanelimbo.rule
 
 import catmoe.fallencrystal.akanelimbo.SharedPlugin
 import catmoe.fallencrystal.akanelimbo.StringManager
-import catmoe.fallencrystal.akanelimbo.util.MessageUtil
 import catmoe.fallencrystal.akanelimbo.util.menu.ForceFormatCode
 import catmoe.fallencrystal.akanelimbo.util.menu.GUIBuilder
 import catmoe.fallencrystal.akanelimbo.util.menu.GUIEnchantsList
 import catmoe.fallencrystal.akanelimbo.util.menu.ItemBuilder
+import catmoe.fallencrystal.moefilter.util.message.MessageUtil
 import dev.simplix.protocolize.api.inventory.InventoryClick
 import dev.simplix.protocolize.api.inventory.InventoryClose
 import dev.simplix.protocolize.data.ItemType
@@ -34,18 +34,6 @@ class RuleMenu : GUIBuilder() {
     private var ruleDeny = "&c不想同意? 再次点击来取消操作."
 
     private val countdownMessage = "&c&l请在 &e&l[sec] &c&l秒内同意本协议 否则将自动视为拒绝协议"
-
-    init {
-        var count = 30
-        ProxyServer.getInstance().scheduler.schedule(SharedPlugin.getLimboPlugin(), {
-            try {
-                if (player != null) {
-                    if (count != 0) { MessageUtil.actionbar(player, countdownMessage.replace("[sec]", count.toString())); count-- }
-                    else { closed = true; disconnect(player!!, ""); return@schedule }
-                }
-            } catch (_: NullPointerException) {}
-        }, 1, TimeUnit.SECONDS)
-    }
 
 
     override fun open(player: ProxiedPlayer) {
@@ -268,6 +256,7 @@ class RuleMenu : GUIBuilder() {
                     .lore(ca(" &e都会造成一定的核污染"))
                     .lore(ca(empty))
                     .lore(ca(" &8这不是协议的一部分xd 看看那个信标吧"))
+                    .lore(ca("&8 这张纸无需同意 :D"))
                     .lore(ca(empty))
                     .lore(ca(ruleAccept))
                     .build()
@@ -354,36 +343,16 @@ class RuleMenu : GUIBuilder() {
 
     override fun onClick(click: InventoryClick?) {
         if (click!!.slot() == agreeItemItemSlot && ruleNotReaded && click.clickedItem().itemType() == ItemType.EMERALD_BLOCK) {
-            disconnect(player!!, "&c你真的认真阅读并同意用户协议了吗?")
-        } else if (click.slot() == agreeItemItemSlot && click.clickedItem()
-                .itemType() == ItemType.BEACON && ruleGeneral && rulePrivacy && ruleFinal && !ruleNotReaded
-        ) {
-            isRead(player!!)
-        } else if (click.slot() == agreeItemItemSlot && click.clickedItem().itemType() == ItemType.REDSTONE_BLOCK) {
-            disconnect(player!!, "&c下次再见!")
-        } else if (click.slot() == ruleFinalItemSlot && click.clickedItem().itemType() == ItemType.PAPER) {
-            ruleFinal = !ruleFinal
-            open(player!!)
-        } else if (click.slot() == ruleGeneralItemSlot && click.clickedItem().itemType() == ItemType.PAPER) {
-            ruleGeneral = !ruleGeneral
-            open(player!!)
-        } else if (click.slot() == rulePrivacyItemSlot && click.clickedItem().itemType() == ItemType.PAPER) {
-            rulePrivacy = !rulePrivacy
-            open(player!!)
+            disconnect(player!!, "&c你真的认真阅读并同意用户协议了吗?") } else if (click.slot() == agreeItemItemSlot && click.clickedItem()
+                .itemType() == ItemType.BEACON && ruleGeneral && rulePrivacy && ruleFinal && !ruleNotReaded) { isRead(player!!)
+        } else if (click.slot() == agreeItemItemSlot && click.clickedItem().itemType() == ItemType.REDSTONE_BLOCK) { disconnect(player!!, "&c下次再见!")
+        } else if (click.slot() == ruleFinalItemSlot && click.clickedItem().itemType() == ItemType.PAPER) { ruleFinal = !ruleFinal; open(player!!)
+        } else if (click.slot() == ruleGeneralItemSlot && click.clickedItem().itemType() == ItemType.PAPER) { ruleGeneral = !ruleGeneral; open(player!!)
+        } else if (click.slot() == rulePrivacyItemSlot && click.clickedItem().itemType() == ItemType.PAPER) { rulePrivacy = !rulePrivacy; open(player!!)
         } else if (click.slot() == ruleNotReadedItemSlot && click.clickedItem().itemType() == ItemType.PAPER) {
-            if (!ruleNotReaded) {
-                ruleNotReaded = true
-            } else {
-                ruleNotReadedItem = !ruleNotReadedItem
-            }
-            open(player!!)
-        } else if (click.slot() == agreeItemItemSlot && click.clickedItem()
-                .itemType() == ItemType.BEACON && !(ruleGeneral && rulePrivacy && ruleFinal && !ruleNotReaded)
-        ) {
-            disconnect(player!!, "&c下次再见!")
-        } else {
-            update()
-        }
+            if (!ruleNotReaded) { ruleNotReaded = true } else { ruleNotReadedItem = !ruleNotReadedItem }; open(player!!)
+        } else if (click.slot() == agreeItemItemSlot && click.clickedItem().itemType() == ItemType.BEACON && !(ruleGeneral && rulePrivacy && ruleFinal && !ruleNotReaded)) {
+            disconnect(player!!, "&c下次再见!") } else { update() }
     }
 
     private fun placeholderItem() {
@@ -417,5 +386,15 @@ class RuleMenu : GUIBuilder() {
         p.connect(StringManager.getLobby())
         closed = true
         ReadCache.cachePut(p.uniqueId, true)
+    }
+
+    fun countdown(p: ProxiedPlayer) {
+        var count = 30
+        ProxyServer.getInstance().scheduler.schedule(SharedPlugin.getLimboPlugin(), {
+            try { if (!closed) {
+                if (count != 0) { MessageUtil.sendActionbar(p, countdownMessage.replace("[sec]", count.toString())); count-- }
+                else { closed = true; disconnect(p, ""); return@schedule }
+            } } catch (_: NullPointerException) { return@schedule }
+        },0, 1, TimeUnit.SECONDS)
     }
 }
