@@ -8,13 +8,4 @@
       </list>
     </option>
   </component>
-  <component name="FacetManager">
-    <facet type="minecraft" name="Minecraft">
-      <configuration>
-        <autoDetectTypes>
-          <platformType>BUNGEECORD</platformType>
-        </autoDetectTypes>
-      </configuration>
-    </facet>
-  </component>
 </module>

@@ -45,7 +45,7 @@ class RuleMenu : GUIBuilder() {
     override fun define(p: ProxiedPlayer?) {
         super.define(p)
         this.type(inventory)
-        setTitle(ca("&b用户协议签署 &7[最后更新 23-02-07]"))
+        setTitle(ca("&b用户协议签署 &7[最后更新 23-06-08]"))
         agreeItem()
         ruleFinal()
         ruleGeneral()
@@ -62,6 +62,7 @@ class RuleMenu : GUIBuilder() {
         val line4 = " &f条款适用于任何接受此条款的人 包括其它玩家 管理员"
         val line5 = " &f我们有权在不通知您的情况下修改条例"
         val line6 = " &f猫萌团队拥有对任何有关其团队的任何事物做出最终解释权."
+        val urllne = " &b&l用户协议完整版:&e&lhttps://www.miaomoe.net/eula"
         if (!ruleFinal) {
             setItem(
                 ruleFinalItemSlot, ItemBuilder(ItemType.PAPER)
@@ -75,6 +76,8 @@ class RuleMenu : GUIBuilder() {
                     .lore(ca(line5))
                     .lore(ca(empty))
                     .lore(ca(line6))
+                    .lore(ca(empty))
+                    .lore(ca(urllne))
                     .lore(ca(empty))
                     .lore(ca(ruleAccept))
                     .build()
@@ -93,6 +96,8 @@ class RuleMenu : GUIBuilder() {
                     .lore(ca(line5))
                     .lore(ca(empty))
                     .lore(ca(line6))
+                    .lore(ca(empty))
+                    .lore(ca(urllne))
                     .lore(ca(empty))
                     .lore(ca(ruleDeny))
                     .build()
@@ -116,6 +121,7 @@ class RuleMenu : GUIBuilder() {
         val line12 = "  &c请妥当保管您的密码 我们不负责提供密码重置服务&7(如果您使用了任何类似的服务)"
         val line13 = " &74. &7严禁进行私下交易 &c如果您因为私下交易遇到了麻烦 猫萌团队概不负责."
         val line14 = " &75. &7未满18周岁的未成年人请在家长的陪同下游玩游戏"
+        val urllne = " &b&l用户协议完整版:&e&lhttps://www.miaomoe.net/eula"
         if (!ruleGeneral) {
             setItem(
                 ruleGeneralItemSlot, ItemBuilder(ItemType.PAPER)
@@ -140,6 +146,8 @@ class RuleMenu : GUIBuilder() {
                     .lore(ca(empty))
                     .lore(ca(line14))
                     .lore(ca(empty))
+                    .lore(ca(urllne))
+                    .lore(ca(empty))
                     .lore(ca(ruleAccept))
                     .build()
             )
@@ -168,6 +176,8 @@ class RuleMenu : GUIBuilder() {
                     .lore(ca(empty))
                     .lore(ca(line14))
                     .lore(ca(empty))
+                    .lore(ca(urllne))
+                    .lore(ca(empty))
                     .lore(ca(ruleDeny))
                     .build()
             )
@@ -187,6 +197,7 @@ class RuleMenu : GUIBuilder() {
         val line9 = "  &7- &f您的私信或公共频道聊天 &7(用于实施通用条例)"
         val line10 = " &d加入服务器代表您同意我们收集这些数据"
         val line11 = " &d如果不同意 请点击下方的物品离开服务器"
+        val urllne = " &b&l用户协议完整版:&e&lhttps://www.miaomoe.net/eula"
         if (!rulePrivacy) {
             setItem(
                 rulePrivacyItemSlot, ItemBuilder(ItemType.PAPER)
@@ -205,6 +216,8 @@ class RuleMenu : GUIBuilder() {
                     .lore(ca(empty))
                     .lore(ca(line10))
                     .lore(ca(line11))
+                    .lore(ca(empty))
+                    .lore(ca(urllne))
                     .lore(ca(empty))
                     .lore(ca(ruleAccept))
                     .build()
@@ -228,6 +241,8 @@ class RuleMenu : GUIBuilder() {
                     .lore(ca(empty))
                     .lore(ca(line10))
                     .lore(ca(line11))
+                    .lore(ca(empty))
+                    .lore(ca(urllne))
                     .lore(ca(empty))
                     .lore(ca(ruleDeny))
                     .build()
@@ -343,7 +358,7 @@ class RuleMenu : GUIBuilder() {
 
     override fun onClick(click: InventoryClick?) {
         if (click!!.slot() == agreeItemItemSlot && ruleNotReaded && click.clickedItem().itemType() == ItemType.EMERALD_BLOCK) {
-            disconnect(player!!, "&c你真的认真阅读并同意用户协议了吗?") } else if (click.slot() == agreeItemItemSlot && click.clickedItem()
+            disconnect(player!!, "&c呐~你真的真的&e认真阅读&c并&e同意用户协议&c了吗?") } else if (click.slot() == agreeItemItemSlot && click.clickedItem()
                 .itemType() == ItemType.BEACON && ruleGeneral && rulePrivacy && ruleFinal && !ruleNotReaded) { isRead(player!!)
         } else if (click.slot() == agreeItemItemSlot && click.clickedItem().itemType() == ItemType.REDSTONE_BLOCK) { disconnect(player!!, "&c下次再见!")
         } else if (click.slot() == ruleFinalItemSlot && click.clickedItem().itemType() == ItemType.PAPER) { ruleFinal = !ruleFinal; open(player!!)
