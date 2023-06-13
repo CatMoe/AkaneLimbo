@@ -7,14 +7,15 @@ import catmoe.fallencrystal.akanelimbo.util.menu.GUIBuilder
 import catmoe.fallencrystal.akanelimbo.util.menu.GUIEnchantsList
 import catmoe.fallencrystal.akanelimbo.util.menu.ItemBuilder
 import catmoe.fallencrystal.moefilter.util.message.MessageUtil
+import catmoe.fallencrystal.moefilter.util.plugin.util.Scheduler
 import dev.simplix.protocolize.api.inventory.InventoryClick
 import dev.simplix.protocolize.api.inventory.InventoryClose
 import dev.simplix.protocolize.data.ItemType
 import dev.simplix.protocolize.data.inventory.InventoryType
-import net.md_5.bungee.api.ProxyServer
 import net.md_5.bungee.api.chat.TextComponent
 import net.md_5.bungee.api.connection.ProxiedPlayer
 import java.util.concurrent.TimeUnit
+import java.util.concurrent.atomic.AtomicInteger
 
 class RuleMenu : GUIBuilder() {
     private val inventory = InventoryType.GENERIC_9X5
@@ -33,7 +34,9 @@ class RuleMenu : GUIBuilder() {
     private var ruleAccept = "&a点击接受此条例!"
     private var ruleDeny = "&c不想同意? 再次点击来取消操作."
 
-    private val countdownMessage = "&c&l请在 &e&l[sec] &c&l秒内同意本协议 否则将自动视为拒绝协议"
+    private val countdownMessage = "<red><bold>请在 <white>[sec]</white> 秒内同意本协议 否则将自动视为拒绝协议"
+
+    private val urlLine = " &b&l用户协议完整版:&e&lhttps://www.miaomoe.net/eula"
 
 
     override fun open(player: ProxiedPlayer) {
@@ -62,7 +65,6 @@ class RuleMenu : GUIBuilder() {
         val line4 = " &f条款适用于任何接受此条款的人 包括其它玩家 管理员"
         val line5 = " &f我们有权在不通知您的情况下修改条例"
         val line6 = " &f猫萌团队拥有对任何有关其团队的任何事物做出最终解释权."
-        val urllne = " &b&l用户协议完整版:&e&lhttps://www.miaomoe.net/eula"
         if (!ruleFinal) {
             setItem(
                 ruleFinalItemSlot, ItemBuilder(ItemType.PAPER)
@@ -77,7 +79,7 @@ class RuleMenu : GUIBuilder() {
                     .lore(ca(empty))
                     .lore(ca(line6))
                     .lore(ca(empty))
-                    .lore(ca(urllne))
+                    .lore(ca(urlLine))
                     .lore(ca(empty))
                     .lore(ca(ruleAccept))
                     .build()
@@ -97,7 +99,7 @@ class RuleMenu : GUIBuilder() {
                     .lore(ca(empty))
                     .lore(ca(line6))
                     .lore(ca(empty))
-                    .lore(ca(urllne))
+                    .lore(ca(urlLine))
                     .lore(ca(empty))
                     .lore(ca(ruleDeny))
                     .build()
@@ -392,8 +394,7 @@ class RuleMenu : GUIBuilder() {
     }
 
     private fun disconnect(p: ProxiedPlayer, reason: String?) {
-        closed = true
-        close()
+        closed = true; close()
         p.disconnect(TextComponent(ca(reason)))
     }
 
@@ -404,12 +405,24 @@ class RuleMenu : GUIBuilder() {
     }
 
     fun countdown(p: ProxiedPlayer) {
-        var count = 30
+        var count = AtomicInteger(30)
+        /*
         ProxyServer.getInstance().scheduler.schedule(SharedPlugin.getLimboPlugin(), {
             try { if (!closed) {
                 if (count != 0) { MessageUtil.sendActionbar(p, countdownMessage.replace("[sec]", count.toString())); count-- }
                 else { closed = true; disconnect(p, ""); return@schedule }
             } } catch (_: NullPointerException) { return@schedule }
         },0, 1, TimeUnit.SECONDS)
+         */
+        Scheduler(SharedPlugin.getLimboPlugin()!!).repeatScheduler(1, TimeUnit.SECONDS) {
+            try {
+                if (!closed) {
+                    if (count.get() != 0) {
+                        MessageUtil.sendActionbar(p, MessageUtil.colorizeMiniMessage(countdownMessage.replace("[sec]", count.toString())))
+                        count = AtomicInteger(count.get()-1)
+                    } else { closed=true; p.pendingConnection.disconnect(); return@repeatScheduler }
+                }
+            } catch (_: NullPointerException) {}
+        }
     }
 }

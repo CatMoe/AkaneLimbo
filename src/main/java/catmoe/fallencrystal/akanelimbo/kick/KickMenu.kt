@@ -2,12 +2,16 @@
 
 package catmoe.fallencrystal.akanelimbo.kick
 
+import catmoe.fallencrystal.akanelimbo.SharedPlugin
 import catmoe.fallencrystal.akanelimbo.util.ServerOnlineCheck.socketPing
 import catmoe.fallencrystal.akanelimbo.util.menu.ForceFormatCode
 import catmoe.fallencrystal.akanelimbo.util.menu.GUIBuilder
 import catmoe.fallencrystal.akanelimbo.util.menu.ItemBuilder
+import catmoe.fallencrystal.moefilter.util.message.MessageUtil
+import catmoe.fallencrystal.moefilter.util.message.MessageUtil.colorizeMiniMessage
 import catmoe.fallencrystal.moefilter.util.message.MessageUtil.sendActionbar
 import catmoe.fallencrystal.moefilter.util.message.MessageUtil.sendTitle
+import catmoe.fallencrystal.moefilter.util.plugin.util.Scheduler
 import dev.simplix.protocolize.api.inventory.InventoryClick
 import dev.simplix.protocolize.api.inventory.InventoryClose
 import dev.simplix.protocolize.data.ItemType
@@ -17,7 +21,6 @@ import net.md_5.bungee.api.chat.TextComponent
 import net.md_5.bungee.api.config.ServerInfo
 import net.md_5.bungee.api.connection.ProxiedPlayer
 import net.md_5.bungee.api.event.ServerKickEvent
-import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 
 class KickMenu : GUIBuilder() {
@@ -81,20 +84,20 @@ class KickMenu : GUIBuilder() {
     override fun onClick(click: InventoryClick?) {
         if (click!!.slot() == 11 && click.clickedItem().itemType() == ItemType.REPEATER) {
             if (notOnline(kickfrom)) {
-                sendActionbar(player!!, "&c目标服务器似乎已离线 请稍后再试")
+                sendActionbar(player!!, colorizeMiniMessage("<red>目标服务器似乎已离线 请稍后再试</red>"))
                 return
             }
             player!!.connect(kickfrom)
             update()
-            sendActionbar(player!!, "&a正在尝试重新连接 请稍后..")
+            sendActionbar(player!!, colorizeMiniMessage("<green>正在尝试重新连接 请稍后..</green>"))
         } else if (click.slot() == 15 && click.clickedItem().itemType() == ItemType.BEACON) {
             if (notOnline(defaultserver)) {
-                sendActionbar(player!!, "&c目标服务器似乎已离线 请稍后再试")
+                sendActionbar(player!!, colorizeMiniMessage("<red>目标服务器似乎已离线 请稍后再试</red>"))
                 return
             }
             player!!.connect(defaultserver)
             update()
-            sendActionbar(player!!, "&a正在将您传送到大厅..")
+            sendActionbar(player!!, colorizeMiniMessage("<green>正在将您传送到大厅..</green>"))
         } else if (click.slot() == 13 && click.clickedItem().itemType() == ItemType.REDSTONE_BLOCK) {
             kick(player, "")
         } else {
@@ -104,15 +107,12 @@ class KickMenu : GUIBuilder() {
 
     override fun onClose(close: InventoryClose?) {
         try {
-            if (player!!.server.info.name.contains("AkaneLimbo") && !this.close) {
+            if (player!!.server.info.name.startsWith("AkaneLimbo") && !this.close) {
                 open(player!!)
-                sendActionbar(player!!, "&b别忘了这可是不存在的地方 关闭了就出不来了哦~")
-            } else {
-                close()
-            }
+                sendActionbar(player!!, colorizeMiniMessage("<aqua>别忘了这可是不存在的地方 关闭了就出不来了哦~</aqua>"))
+            } else { close() }
             // 如果玩家离开造成的NullPointerException 则关闭菜单
-        } catch (ignore: NullPointerException) {
-        }
+        } catch (ignore: NullPointerException) { }
     }
 
     private fun ca(text: String?): String {
@@ -135,9 +135,10 @@ class KickMenu : GUIBuilder() {
     }
 
     fun sendTitle(p: ProxiedPlayer?) {
-        val title = "&c连接已丢失"
-        val subtitle = "&f在菜单内选择 &b回到大厅 &f或 &b重新连接&f"
+        val title = "<red>连接已丢失</red>"
+        val subtitle = "<white>在菜单内选择 <aqua>回到大厅</aqua> 或 <aqua>重新连接</aqua></white>"
         sendTitle(p!!, title, subtitle, 18, 5, 0)
+        /*
         val scheduledExecutorService = Executors.newSingleThreadScheduledExecutor()
         // 创建循环
         scheduledExecutorService.scheduleAtFixedRate({
@@ -146,5 +147,11 @@ class KickMenu : GUIBuilder() {
                 scheduledExecutorService.shutdownNow()
             } else { sendTitle(p, title, subtitle, 21, 0, 0) }
         }, 1, 1, TimeUnit.SECONDS)
+         */
+        Scheduler(SharedPlugin.getLimboPlugin()!!).repeatScheduler(1, TimeUnit.SECONDS) {
+            if (p.server.info.name.startsWith("AkaneLimbo")) {
+                sendTitle(p, MessageUtil.colorizeMiniMessage(title), MessageUtil.colorizeMiniMessage(subtitle), 30, 0, 0)
+            } else { sendTitle(p, "", "", 0, 0, 0); return@repeatScheduler }
+        }
     }
 }

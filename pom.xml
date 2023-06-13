@@ -164,7 +164,7 @@
             <artifactId>MoeFilter</artifactId>
             <scope>system</scope>
             <systemPath>${basedir}/lib/MoeFilter.jar</systemPath>
-            <version>0.0.1-API2</version>
+            <version>0.0.1-API7</version>
         </dependency>
         <dependency>
             <groupId>com.jakub.premium</groupId>

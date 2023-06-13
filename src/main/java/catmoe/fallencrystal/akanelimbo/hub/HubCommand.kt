@@ -25,7 +25,7 @@ class HubCommand(name: String, permission: String?, vararg aliases: String?) : C
         proxy.scheduler.runAsync(SharedPlugin.getLimboPlugin()) {
             val playerServer = player.server.info
             if (isMatch(bedwarsServer, playerServer.name)) { val lobby = proxy.getServerInfo(bedwarsLobby) ?: return@runAsync; player.connect(lobby) }
-            if (playerServer == StringManager.getLobby()) { MessageUtil.sendActionbar(player, "&c您已经在大厅了! 搁这卡bug呢"); return@runAsync }
+            if (playerServer == StringManager.getLobby()) { MessageUtil.sendActionbar(player, MessageUtil.colorizeMiniMessage("<red>您已经在大厅了! 搁这卡bug呢")); return@runAsync }
             player.connect(StringManager.getLobby())
         }
     }
